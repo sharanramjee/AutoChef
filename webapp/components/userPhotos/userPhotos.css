@@ -1,0 +1,17 @@
+.comment{
+    display: inline-flex;
+    width: 100%;
+}
+
+.comment-name{
+    display: inline-block;
+    color: #3f50b5;
+}
+
+.new-comment{
+    margin-right: 10px;
+}
+
+Card{
+    padding-bottom: 20px;
+}

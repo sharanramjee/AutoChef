@@ -1,0 +1,89 @@
+Project #8 - Submission form
+
+Please fill in this form and submit it with your project #8.
+
+Enter no more than 5 user stories that you did for the assignment that you would like to be
+graded on. For each story include the following information:
+
+Story number and name: 2 - @mentions in comments
+Story points: 6
+Brief description to see the story in action: Write a comment using an '@' in the comment
+box under any photo to bring up a list of users that can be mentioned. Click on one of the
+users to mention their name. Then complete the comment (if anything else is to be mentioned)
+and click post to post the comment. Going to a user detail view allows a user to view all
+mentions of the user. When an invalid user is mentioned, it does not result in the app crashing.
+Each mention includes in the user detail view contains a thumbnail of the photo that can be
+clicked on to change views to display the photo. The photo also contains the photo owner's name
+that can be clicked on to view the owner's user detail page. Finally, if a user has no mentions,
+the user detail page reflects that.
+
+Story number and name: 3 - Visibility control on photos
+Story points: 4
+Brief description to see the story in action: Click on the upload photo button. In order to specify
+who can view the photo that is about to be uploaded, check the specify permissions box, which should
+bring up more checkboxes with each user whose checkboxes can be checked to set whether or not they
+can view the image. Once the users are checked and the image is uploaded, the uploader and the users
+checked can view the image from the user photos page. The users not checked cannot view the image.
+If the image is uploaded without checking the specify permissions checkbox, every user can view the
+image. If specify permissions is checked but no users are checked, only the owner can view the image.
+This also interacts with the mentions story. Let's say user A and B can view an image but C cannot.
+If user A mentions user C in a comment on that image, then users A and B can view the image in the
+mentions section of user C's details page. However, user C cannot see this since they do not have
+permissions to view the image and thus, do not know that they were mentioned.
+
+Story number and name: 6 - Photo like votes
+Story points: 4
+Brief description to see the story in action: Go to the photos page of a user and click on the thumbs
+up button to like an image. The page is immediately updated to sort the images by likes (and by most
+recent next). The like count next to the thumbs up button updates and the like button is shaded to
+reflect that the user has liked the image. The thumbs up button can be clicked again to unlike the
+image and the count and shade of the thumbs up revert to reflect that the image has been unliked.
+
+Story number and name: 7 - Favorite lists of photos for users
+Story points: 6
+Brief description to see the story in action: Go to the photos page of a user and click on the heart
+button next to the thumbs up like button. The heart gets shaded to reflect that the image has been
+favorited and the button gets disabled. Navigating to /favorites or clicking on the favorites button
+on the tool bar takes a user to the favorites page showing all the favorited photos as thumbnails.
+Clicking on a thumbnail opens up a modal window displaying a larger version of the image along with
+its details. Clicking outside the modal window causes the modal window to close. Each thumbnail
+contains an X icon on the top right corner to remove the photo as a favorite. If no photos were
+favorited, the favorites page reflects that.
+
+Story number and name: 9 - Tagging photos
+Story points: 10
+Brief description to see the story in action: Go to the photos page of a user. Click and drag a box
+to select a region to be tagged. The box can be dragged in any direction and the box cannot extend
+outside the range of the image (as the box is clipped at the border). Once the button is released, 
+the box has been selected. Clicking elsewhere outside the box closes the box and allows another box
+to be selected in case the user does not like the selected box. Once the box has been selected, the
+list of users pops up and clicking on a user causes them to be tagged. Multiple tags can be selected
+per photo, each with their own user name and the boxes selected can overlap. Hovering a mouse over a
+photo displays all the boxes and hovering over a box displays a link with the user name of the user
+tagged, which can be clicked on to show the user detail view of the user.
+
+Total Story Points: 30
+
+Marketing Video URL (ensure permissions are set to public viewing): https://youtu.be/oF41YpWQhVM
+
+Is it OK with you if we post your Marketing Video URL on the class discussion forum? Yes
+
+Any special instructions for Grading (should be easy to run app from new machine): None
+
+
+************************************ Example *******************
+* As an example for if you did only story 5 your file would look like:
+* 
+* Story number and name:  5 - Activity Feed
+* Story points:  4
+* Brief description to see the story in action:
+* Push the button labeled Activity on the toolbar and view the 10 most recent activities of the
+* current user.
+* 
+* Total Story Points: 4
+* 
+* Marketing Video URL (ensure permissions are set to public viewing): http://www.youtube.com ---
+* 
+* Is it OK with you if we post your Marketing Video URL on the class discussion forum? Yes
+* 
+* Instructions for Grading (should be easy to run app from new machine): None
