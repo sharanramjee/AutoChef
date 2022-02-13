@@ -126,81 +126,89 @@ class TopBar extends React.Component {
       <AppBar className='topbar-appbar' position='absolute'>
         <Toolbar>
           {this.props.current_user ? (
-            <Grid container direction='row' justify='space-between' alignItems='center'>
-              <div>
-                <Typography className='home-button' variant='h4' button onClick={this.handleHomeButtonClicked} component={Link} to={'/'}>AutoChef</Typography>
-              </div>
-              <Typography variant='h5' align='right'>
-                  Hi {this.props.current_user.first_name}
-              </Typography>
-              <Typography variant='h5' align='right'>
-                  {this.state.view}
-              </Typography>
-              
+            <Grid container direction='row' justifyContent='space-between'>
               <Grid item>
-                <Link to='/favorites'>
-                  <Button variant='contained' onClick={this.handleFavoriteButtonClicked}>
-                    Favorites
-                  </Button>
-                </Link>
+                <Grid container direction='row' justifyContent='flex-start'>
+                  <Typography id='home-button' variant='h4' onClick={this.handleHomeButtonClicked} component={Link} to={'/'}>
+                    AutoChef
+                  </Typography>
+                </Grid>
               </Grid>
-              
               <Grid item>
-                <Button variant='contained' color='primary' onClick={this.handleUploadDialogOpened}>
-                  Upload Photo
-                </Button>
-                <Dialog open={this.state.upload_dialog_open} onClose={this.handleUploadDialogClosed}>
-                  <form onSubmit={this.handleUploadButtonClicked}>
-                    <FormLabel>
-                      <input
-                        type='file'
-                        accept='image/*'
-                        ref={domFileRef => {this.uploadInput = domFileRef}}
-                      />
-                    </FormLabel>
-                    <FormGroup>
-                      <FormControlLabel
-                        control={<Checkbox checked={this.state.permissions_box} onChange={this.handleChangePermissions}/>}
-                        label='Specify permissions'
-                      />
-                    </FormGroup>
-                    {this.state.permissions_box && (
-                      <div>
+                <Grid container direction='row' justifyContent='flex-end'>
+                  {/* <Typography variant='h5' align='right'>
+                      Hi {this.props.current_user.first_name}
+                  </Typography>
+                  <Typography variant='h5' align='right'>
+                      {this.state.view}
+                  </Typography> */}
+                  
+                  {/* <Grid item>
+                    <Link to='/favorites'>
+                      <Button variant='contained' onClick={this.handleFavoriteButtonClicked}>
+                        Favorites
+                      </Button>
+                    </Link>
+                  </Grid> */}
+                  
+                  <Grid item id='upload-button'>
+                    <Button variant='contained' color='primary' onClick={this.handleUploadDialogOpened} >
+                      Upload Photo
+                    </Button>
+                    <Dialog open={this.state.upload_dialog_open} onClose={this.handleUploadDialogClosed}>
+                      <form onSubmit={this.handleUploadButtonClicked}>
                         <FormLabel>
-                          Choose who can view:
+                          <input
+                            type='file'
+                            accept='image/*'
+                            ref={domFileRef => {this.uploadInput = domFileRef}}
+                          />
                         </FormLabel>
                         <FormGroup>
-                          {this.state.unpermitted_users && this.state.unpermitted_users.map(user => {
-                            return (
-                              <FormControlLabel
-                                key={user._id}
-                                control={
-                                  <Checkbox
-                                    checked={this.state.permitted_users[user._id]}
-                                    onChange={this.handleChangeFriendPermissions(user._id)}
-                                    value={user._id}
-                                  />
-                                }
-                                label={user.first_name + ' ' + user.last_name}
-                              />
-                            );
-                          })}
+                          <FormControlLabel
+                            control={<Checkbox checked={this.state.permissions_box} onChange={this.handleChangePermissions}/>}
+                            label='Specify permissions'
+                          />
                         </FormGroup>
-                      </div>
-                    )}
-                    <Input color='primary' type='submit' value='Post' />
-                  </form>
-                </Dialog>
-              </Grid>
+                        {this.state.permissions_box && (
+                          <div>
+                            <FormLabel>
+                              Choose who can view:
+                            </FormLabel>
+                            <FormGroup>
+                              {this.state.unpermitted_users && this.state.unpermitted_users.map(user => {
+                                return (
+                                  <FormControlLabel
+                                    key={user._id}
+                                    control={
+                                      <Checkbox
+                                        checked={this.state.permitted_users[user._id]}
+                                        onChange={this.handleChangeFriendPermissions(user._id)}
+                                        value={user._id}
+                                      />
+                                    }
+                                    label={user.first_name + ' ' + user.last_name}
+                                  />
+                                );
+                              })}
+                            </FormGroup>
+                          </div>
+                        )}
+                        <Input color='primary' type='submit' value='Post' />
+                      </form>
+                    </Dialog>
+                  </Grid>
 
-              <Grid item>
-                <Button variant='contained' onClick={this.handleLogoutButtonClicked}>
-                  Log out
-                </Button>
+                  <Grid item>
+                    <Button variant='contained' onClick={this.handleLogoutButtonClicked}>
+                      Log out
+                    </Button>
+                  </Grid>
+                </Grid>
               </Grid>
             </Grid>
           ) : (
-            <Grid container direction='row' justify='space-between' alignItems='center'>
+            <Grid container direction='row' justifyContent='space-between' alignItems='center'>
               <div>
                 <ListItem button onClick={this.handleHomeButtonClicked} component={Link} to={'/'} >
                   <ListItemText primary={'AutoChef'} />

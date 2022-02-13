@@ -48,7 +48,7 @@ class UserPhotos extends React.Component {
   render() {
     return this.state.user ? (
       <div>
-        <Grid container direction='column' padding={8} justify='space-between' alignItems='center'>
+        <Grid container direction='column' padding={8} justifyContent='space-between' alignItems='center'>
           {this.state.photos ? (
             this.state.photos.sort((photo1, photo2) => photo2.liked_by.length - photo1.liked_by.length).map(photo =>
               photo.users_permitted.indexOf(this.props.curr_user_id) > -1 && (

@@ -30,7 +30,7 @@ constructor(props) {
 
   render() {
     return (
-      <Grid container justify='space-evenly' alignItems='flex-start'>
+      <Grid container justifyContent='space-evenly' alignItems='flex-start'>
         {this.state.favorites.length > 0 ? (
           this.state.favorites.map(photo => (
           <Grid item xs={2} key={photo.file_name}>

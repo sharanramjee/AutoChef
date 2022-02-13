@@ -104,7 +104,7 @@ class LoginRegister extends React.Component {
 
   render() {
     return (
-      <Grid container justify='space-around'>
+      <Grid container justifyContent='space-around'>
         <Grid item>
           <Typography variant='h5' color='inherit'>
             Login

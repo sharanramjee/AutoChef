@@ -3,7 +3,11 @@
   justify-content: 'center';
 }
 
-.home-button {
+#home-button {
   color: white;
   text-decoration: none;
+}
+
+#upload-button {
+  margin-right: 30px;
 }

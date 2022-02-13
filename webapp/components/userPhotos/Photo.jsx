@@ -215,7 +215,7 @@ class Photo extends React.Component {
               {this.props.photo.comments.map(comment => {
                 // Show current comments
                 return (
-                  <Grid container justify='space-between' padding={5} key={comment._id}>
+                  <Grid container justifyContent='space-between' padding={5} key={comment._id}>
                     <Grid item xs={3}>
                       <div className='comment-name'>
                         <ListItem button component={Link} to={'/users/' + comment.user._id}>
