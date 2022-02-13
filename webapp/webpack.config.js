@@ -1,6 +1,6 @@
 module.exports = {
   entry: {
-    photoShare: './photoShare.jsx',
+    AutoChef: './AutoChef.jsx',
   },
   module: {
     rules: [

@@ -13,7 +13,7 @@ import UserPhotos from './components/userPhotos/UserPhotos';
 import LoginRegister from './components/LoginRegister/LoginRegister';
 import Favorites from './components/favorites/Favorites';
 
-class PhotoShare extends React.Component {
+class AutoChef extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -122,6 +122,6 @@ class PhotoShare extends React.Component {
 
 
 ReactDOM.render(
-  <PhotoShare />,
-  document.getElementById('photoshareapp'),
+  <AutoChef />,
+  document.getElementById('autochefapp'),
 );
