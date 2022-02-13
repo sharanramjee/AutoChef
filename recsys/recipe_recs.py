@@ -59,7 +59,7 @@ class RecipeRecommender():
             num_calls += 1
 
         # Sort by missedIngredientCount, then spoonacularScore
-        sorted_recipes = sorted(relevant_recipes, key=lambda d: (d['missedIngredientCount'], -d['spoonacularScore'], -d['aggregateLikes'])) 
+        sorted_recipes = sorted(relevant_recipes, key=lambda d: (d['missedIngredientCount'], -d['usedIngredientCount'], -d['spoonacularScore'], -d['aggregateLikes'])) 
 
         return sorted_recipes
 
