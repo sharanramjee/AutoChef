@@ -5,14 +5,13 @@ import {Link} from 'react-router-dom';
 import axios from 'axios';
 
 /**
- * Define TopBar, a React componment of CS142 project #5
+ * TopBar of the webapp
  */
 class TopBar extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       view: this.props.view,
-      version: undefined,
       upload_dialog_open: false,
       permissions_box: false,
       permitted_users: {},
@@ -28,13 +27,6 @@ class TopBar extends React.Component {
   }
 
   componentDidMount() {
-    axios.get('test/info')
-    .then(response => {
-      this.setState({version: response.data.__v});
-    })
-    .catch(err => {
-      console.log(err.response);
-    })
     axios.get('/unpermittedUsers/list')
     .then(response => {
       this.setState({unpermitted_users: response.data});
@@ -47,13 +39,6 @@ class TopBar extends React.Component {
   componentDidUpdate(prevProps) {
     if (prevProps.view !== this.props.view) {
       this.setState({view: this.props.view});
-      axios.get('test/info')
-      .then(response => {
-        this.setState({version: response.data.__v});
-      })
-      .catch(err => {
-        console.log(err.response);
-      })
     }
     if (prevProps.current_user !== this.props.current_user) {
       axios.get('/unpermittedUsers/list')
@@ -138,13 +123,13 @@ class TopBar extends React.Component {
 
   render() {
     return (
-      <AppBar className='cs142-topbar-appBar' position='absolute'>
+      <AppBar className='topbar-appbar' position='absolute'>
         <Toolbar>
           {this.props.current_user ? (
             <Grid container direction='row' justify='space-between' alignItems='center'>
               <div>
                 <ListItem button onClick={this.handleHomeButtonClicked} component={Link} to={'/'} >
-                  <ListItemText primary={'Sharan Ramjee\'s Photo Sharing App'} secondary={'version=' + this.state.version} />
+                  <ListItemText primary={'AutoChef'} />
                 </ListItem>
               </div>
               <Typography variant='h5' align='right'>
@@ -220,7 +205,7 @@ class TopBar extends React.Component {
             <Grid container direction='row' justify='space-between' alignItems='center'>
               <div>
                 <ListItem button onClick={this.handleHomeButtonClicked} component={Link} to={'/'} >
-                  <ListItemText primary={'Sharan Ramjee\'s Photo Sharing App'} secondary={'version=' + this.state.version} />
+                  <ListItemText primary={'AutoChef'} />
                 </ListItem>
               </div>
               <Typography variant='h5'>Please login</Typography>
