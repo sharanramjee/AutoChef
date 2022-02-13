@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import {HashRouter, Route, Switch, Redirect} from 'react-router-dom';
 import {Grid, Paper} from '@material-ui/core';
+import {MuiThemeProvider, createTheme} from '@material-ui/core/styles';
 import './styles/main.css';
 import axios from 'axios';
 
@@ -59,8 +60,19 @@ class AutoChef extends React.Component {
   }
 
   render() {
+    const theme = createTheme({
+      palette: {
+        primary: {
+          main:'#4caf50'
+        },
+        secondary: {
+          main:'#6fbf73'
+        },
+      },
+    })
     return (
-      <HashRouter>
+    <MuiThemeProvider theme={theme}>
+    <HashRouter>
       <div>
       <Grid container spacing={8}>
         <Grid item xs={12}>
@@ -116,6 +128,7 @@ class AutoChef extends React.Component {
       </Grid>
       </div>
     </HashRouter>
+    </MuiThemeProvider>
     );
   }
 }

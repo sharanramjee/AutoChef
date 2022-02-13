@@ -2,3 +2,8 @@
   height: 60;
   justify-content: 'center';
 }
+
+.home-button {
+  color: white;
+  text-decoration: none;
+}

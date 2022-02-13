@@ -128,9 +128,7 @@ class TopBar extends React.Component {
           {this.props.current_user ? (
             <Grid container direction='row' justify='space-between' alignItems='center'>
               <div>
-                <ListItem button onClick={this.handleHomeButtonClicked} component={Link} to={'/'} >
-                  <ListItemText primary={'AutoChef'} />
-                </ListItem>
+                <Typography className='home-button' variant='h4' button onClick={this.handleHomeButtonClicked} component={Link} to={'/'}>AutoChef</Typography>
               </div>
               <Typography variant='h5' align='right'>
                   Hi {this.props.current_user.first_name}
