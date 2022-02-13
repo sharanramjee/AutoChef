@@ -5,16 +5,17 @@ class RecipeRecommender():
     def __init__(self, api_key):
         self.api_key = api_key
 
-    def make_get_recipes_call(self, ingredients, num_calls, num_results_per_call):
+    def get_recipes_call(self, ingredients, num_calls, num_results_per_call):
         params = {
             'apiKey': self.api_key,
-            'includeIngredients': ingredients, 'number': num_results_per_call,
+            'includeIngredients': ",".join(ingredients), 'number': num_results_per_call,
             'type': 'main course', 'fillIngredients': True, 'addRecipeInformation': True,
             'sort': 'min-missing-ingredients', 'sortDirection': 'asc',
             'offset': num_calls * num_results_per_call
         }
         response = requests.get(url="https://api.spoonacular.com/recipes/complexSearch", params=params)
         response_json = response.json()
+        # print(response.request.url)        
 
         return response_json
 
@@ -46,11 +47,12 @@ class RecipeRecommender():
 
         # num_calls < 3 to avoid too much calls to spoonacular
         while num_calls < 3 and len(relevant_recipes) < num_recipes:
-            response_json = self.make_get_recipes_call(ingredients, num_calls, num_results_per_call)
+            response_json = self.get_recipes_call(ingredients, num_calls, num_results_per_call)
 
             # Only add result if spoonacularscore >= 75:
             # TEMP: Can be changed
             for recipe in response_json['results']:
+                print(recipe['usedIngredientCount'])
                 if recipe['spoonacularScore'] >= 75:
                     relevant_info = self.get_relevant_info(recipe)
                     relevant_recipes.append(relevant_info)
