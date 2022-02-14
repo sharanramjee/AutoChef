@@ -45,7 +45,7 @@ class RecipeRecommender():
         # Manually only filtering top recipes through a loop
         relevant_recipes = []
         num_calls = 0
-        num_results_per_call = 10
+        num_results_per_call = 20
 
         # num_calls < 3 to avoid too much calls to spoonacular
         # while num_calls < 3 and len(relevant_recipes) < num_recipes:
