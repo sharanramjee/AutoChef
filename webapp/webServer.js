@@ -48,8 +48,9 @@ var fs = require('fs');
 var cs142password = require('./cs142password.js');
 
 
-// Load the Mongoose schema for User, Photo, and SchemaInfo
+// Load the Mongoose schema for User, Recipe, Photo, and SchemaInfo
 var User = require('./schema/user.js');
+var Recipe = require('./schema/recipe.js');
 var Photo = require('./schema/photo.js');
 var SchemaInfo = require('./schema/schemaInfo.js');
 
@@ -245,7 +246,7 @@ app.get('/unpermittedUsers/list', function(request, response) {
 });
 
 /*
- * URL /user/list - Return all the User object.
+ * URL /user/list - Return all the User objects.
  */
 app.get('/user/list', function (request, response) {
     if (!request.session.user_id) {
@@ -563,7 +564,7 @@ app.post('/addTag/:photo_id', function(request, response) {
     });
 });
 
-// Get favorited photos
+// Get favorited recipes
 app.get('/getFavorites', function(request, response) {
     if (!request.session.user_id) {
         response.status(401).send('User not logged in');
@@ -580,17 +581,16 @@ app.get('/getFavorites', function(request, response) {
         let favorites = [];
         async.each(
             user_favorites,
-            (photo_id, callback) => {
-                Photo.findOne({_id: photo_id}, function(err, photo) {
+            (recipe_id, callback) => {
+                Recipe.findOne({_id: recipe_id}, function(err, recipe) {
                     if (err) {
-                        console.log('Photo with id:' + photo_id + ' not found.');
-                        response.status(400).send('Photo with id:' + photo_id + ' not found.');
+                        console.log('Recipe with id:' + receipe_id + ' not found.');
+                        response.status(400).send('Recipe with id:' + recipe_id + ' not found.');
                         return;
                     }
                     favorites.push({
-                        file_name: photo.file_name,
-                        date_time: photo.date_time,
-                        _id: photo._id
+                        name: recipe.name,
+                        id: recipe.id
                     });
                     callback();
                 });
@@ -618,7 +618,6 @@ app.post('/photos/new', function(request, response) {
                 response.status(400).send('Invalid file');
                 return;
         }
-        let user_permissions = JSON.parse(request.body.usersPermissed);
         var timestamp = new Date().valueOf();
         var filename = 'U' + String(timestamp) + request.file.originalname;
         fs.writeFile('./images/' + filename, request.file.buffer, function(err) {
@@ -627,15 +626,11 @@ app.post('/photos/new', function(request, response) {
                 response.status(400).send('Cannot write file');
                 return;
             }
-            let users_permitted = Object.entries(user_permissions).filter((key_value) => key_value[1]).map((key_value) => key_value[0]);
-            users_permitted.push(request.session.user_id);
             Photo.create({
                 file_name: filename,
                 date_time: timestamp,
                 user_id: request.session.user_id,
-                comments: [],
                 tags: [],
-                users_permitted,
                 },
                 function(err, newPhoto) {
                     if (err) {

@@ -1,0 +1,45 @@
+#added-ingredient-textbox {
+    width: 90% !important;
+    border-right: 10px;
+}
+
+.detected-ingredient-list {
+    background-color: white !important;
+}
+
+.photo-content {
+    overflow: visible !important;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#hover-for-name {
+    color: white;
+    font-size: 14;
+}
+
+.tag-input-photo{
+    width: 200px;
+    position: absolute;
+    z-index: 1;
+}
+
+.my-react-crop > .ReactCrop__crop-selection{
+    border: 2px solid white;
+    box-shadow: 0 0 0 0;
+    position: absolute;
+}
+
+.ReactCrop.my-react-crop {
+    overflow: inherit;
+}
+
+.my-react-crop > .ReactCrop__drag-handle {
+    display: none;
+}
+
+.rect-tag-crop {
+    border: 2px solid white;
+    position: absolute;
+}

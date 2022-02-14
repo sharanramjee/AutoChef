@@ -6,6 +6,13 @@
 
 var mongoose = require('mongoose');
 
+// var favoriteSchema = new mongoose.Schema({
+//     id: Number,     // Spoonacular ID of the recipe
+//     name: String,   // Name of the recipe
+
+//     // Add more properties here later
+// });
+
 // create a schema
 var userSchema = new mongoose.Schema({
     first_name: String,    // First name of the user.
@@ -17,7 +24,7 @@ var userSchema = new mongoose.Schema({
     password_digest: String,    // Password digest.
     salt: String,               // Password salt.
     mentioned: [mongoose.Schema.Types.ObjectId],    // List of photos that mention user.
-    favorites: [mongoose.Schema.Types.ObjectId],    // List of photos favorited by user.
+    favorites: [String],    // List of recipe IDs favorited by user.
 });
 
 // the schema is useless so far

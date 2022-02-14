@@ -9,7 +9,9 @@ import axios from 'axios';
 // import necessary components
 import TopBar from './components/topBar/TopBar';
 import UserDetail from './components/userDetail/UserDetail';
-import UserList from './components/userList/UserList';
+import FavoriteList from './components/favoriteList/FavoriteList';
+import IngredientSelector from './components/ingredientSelector/ingredientSelector';
+
 import UserPhotos from './components/userPhotos/UserPhotos';
 import LoginRegister from './components/LoginRegister/LoginRegister';
 import Favorites from './components/favorites/Favorites';
@@ -81,12 +83,12 @@ class AutoChef extends React.Component {
         </Grid>
         <div className='cs142-main-topbar-buffer'/>
         <Grid item sm={3}>
-          <Paper className='cs142-main-grid-item'>
-            {this.state.current_user ? <UserList /> : null}
+          <Paper elevation={0} className='cs142-main-grid-item'>
+            {this.state.current_user ? <FavoriteList /> : null}
           </Paper>
         </Grid>
         <Grid item sm={9}>
-          <Paper className='cs142-main-grid-item'>
+          <Paper elevation={0} className='cs142-main-grid-item'>
             <Switch>
               {this.state.current_user ? (
                 <Redirect path='/login-register' to={`/users/${this.state.current_user._id}`} />
@@ -116,6 +118,13 @@ class AutoChef extends React.Component {
                 />
               ) : (
                 <Redirect path='/photos/:userId' to='/login-register' />
+              )}
+              {this.state.current_user ? (
+                <Route path='/ingredient-selector'
+                  render={props => <IngredientSelector curr_user_id={this.state.current_user._id} {...props} /> }
+                />
+              ) : (
+                <Redirect path='/ingredient-selector' to='/login-register' />
               )}
               {this.state.current_user ? (
                 <Redirect path='/' to={`/users/${this.state.current_user._id}`} />
