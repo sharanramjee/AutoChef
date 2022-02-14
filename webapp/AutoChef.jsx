@@ -11,6 +11,7 @@ import TopBar from './components/topBar/TopBar';
 import UserDetail from './components/userDetail/UserDetail';
 import FavoriteList from './components/favoriteList/FavoriteList';
 import IngredientSelector from './components/ingredientSelector/ingredientSelector';
+import SuggestedRecipes from './components/suggestedRecipes/SuggestedRecipes';
 
 import UserPhotos from './components/userPhotos/UserPhotos';
 import LoginRegister from './components/LoginRegister/LoginRegister';
@@ -25,10 +26,13 @@ class AutoChef extends React.Component {
       login_name: undefined,
       current_user: undefined,
       upload_clicked: false,
+      query_ingredients: [],
+      query_include_pantry: true,
     }
     this.changeView = this.changeView.bind(this);
     this.changeLoggedIn = this.changeLoggedIn.bind(this);
     this.changeUpload = this.changeUpload.bind(this);
+    this.changeQuery = this.changeQuery.bind(this);
   }
 
   componentDidMount() {
@@ -59,6 +63,13 @@ class AutoChef extends React.Component {
 
   changeUpload(newClick) {
     this.setState({upload_clicked: newClick});
+  }
+
+  changeQuery(new_query_ingredients, new_query_include_pantry) {
+    this.setState({
+      query_ingredients: new_query_ingredients,
+      query_include_pantry: new_query_include_pantry
+    });
   }
 
   render() {
@@ -121,10 +132,17 @@ class AutoChef extends React.Component {
               )}
               {this.state.current_user ? (
                 <Route path='/ingredient-selector'
-                  render={props => <IngredientSelector curr_user_id={this.state.current_user._id} {...props} /> }
+                  render={props => <IngredientSelector changeQuery={this.changeQuery} curr_user_id={this.state.current_user._id} {...props} /> }
                 />
               ) : (
                 <Redirect path='/ingredient-selector' to='/login-register' />
+              )}
+              {this.state.current_user ? (
+                <Route path='/suggested-recipes'
+                  render={props => <SuggestedRecipes query_ingredients={this.state.query_ingredients} query_include_pantry={this.state.query_include_pantry} {...props} /> }
+                />
+              ) : (
+                <Redirect path='/suggested-recipes' to='/login-register' />
               )}
               {this.state.current_user ? (
                 <Redirect path='/' to={`/users/${this.state.current_user._id}`} />

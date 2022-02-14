@@ -40,6 +40,8 @@ class IngredientSelector extends React.Component {
     this.handleAddedIngredientTextChange = this.handleAddedIngredientTextChange.bind(this);
     this.handleAddedIngredientButtonClick = this.handleAddedIngredientButtonClick.bind(this);
     this.handlePantryCheckbox = this.handlePantryCheckbox.bind(this);
+    this.handleSuggestButtonClick = this.handleSuggestButtonClick.bind(this);
+    this.query_stringify = this.query_stringify.bind(this);
   }
 
   componentDidMount() {
@@ -190,13 +192,31 @@ class IngredientSelector extends React.Component {
       new_added_ingredients[new_ingredient] = !new_added_ingredients[new_ingredient];
     }
     this.setState({added_ingredients: new_added_ingredients});
-    console.log(Object.keys(this.state.added_ingredients));
   }
 
   handlePantryCheckbox() {
     let pantry_checkbox_status = this.state.include_pantry;
     pantry_checkbox_status = !pantry_checkbox_status;
     this.setState({include_pantry: pantry_checkbox_status});
+  }
+
+  query_stringify(ingredient_list, include_panty_status) {
+    let ingredient_string = ingredient_list.join(',+');
+    let query_string = 'includePantry='.concat(include_panty_status.toString()).concat('&ingredients=').concat(ingredient_string);
+    return query_string;
+  }
+
+  handleSuggestButtonClick() {
+    let ingredient_list = [];
+    for(let detected_ingredient of Object.keys(this.state.detected_ingredients)) {
+      ingredient_list.push(detected_ingredient);
+    }
+    for(let added_ingredient of Object.keys(this.state.added_ingredients)) {
+      ingredient_list.push(added_ingredient);
+    }
+    let include_panty_status = this.state.include_pantry;
+    this.props.changeQuery(ingredient_list, include_panty_status);
+    window.location.href = '#/suggested-recipes';
   }
 
   render() {
@@ -299,6 +319,9 @@ class IngredientSelector extends React.Component {
             />
           </FormGroup>
           <br/> <Divider/>
+          <Button variant='contained' color='primary' size='small' onClick={this.handleSuggestButtonClick}>
+            SUGGEST RECIPES
+          </Button>
         </div>
       );
     }
