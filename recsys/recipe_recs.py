@@ -5,10 +5,11 @@ class RecipeRecommender():
     def __init__(self, api_key):
         self.api_key = api_key
 
-    def get_recipes_call(self, ingredients, num_calls, num_results_per_call):
+    def get_recipes_call(self, ingredients, use_pantry, num_calls, num_results_per_call):
         params = {
             'apiKey': self.api_key,
-            'includeIngredients': ",".join(ingredients), 'number': num_results_per_call,
+            'includeIngredients': ",".join(ingredients), 'ignorePantry': use_pantry,
+            'number': num_results_per_call,
             'type': 'main course', 'fillIngredients': True, 'addRecipeInformation': True,
             'sort': 'min-missing-ingredients', 'sortDirection': 'asc',
             'offset': num_calls * num_results_per_call
@@ -23,7 +24,8 @@ class RecipeRecommender():
     def get_relevant_info(self, recipe):
         relevant_params = [
             'missedIngredientCount', 'usedIngredientCount', 'missedIngredients', 
-            'usedIngredients', 'title', 'image', 'spoonacularScore', 'healthScore', 'aggregateLikes', 'veryPopular'
+            'usedIngredients', 'title', 'image', 'summary',
+            'spoonacularScore', 'healthScore', 'aggregateLikes', 'veryPopular',
         ]
         relevant_info = {param: recipe[param] for param in relevant_params}
 
@@ -38,7 +40,7 @@ class RecipeRecommender():
         return relevant_info
 
 
-    def get_recipes_by_ingredients(self, ingredients, num_recipes):
+    def get_recipes_by_ingredients(self, ingredients, use_pantry, num_recipes):
 
         # Manually only filtering top recipes through a loop
         relevant_recipes = []
@@ -47,12 +49,11 @@ class RecipeRecommender():
 
         # num_calls < 3 to avoid too much calls to spoonacular
         while num_calls < 3 and len(relevant_recipes) < num_recipes:
-            response_json = self.get_recipes_call(ingredients, num_calls, num_results_per_call)
+            response_json = self.get_recipes_call(ingredients, use_pantry, num_calls, num_results_per_call)
 
             # Only add result if spoonacularscore >= 75:
             # TEMP: Can be changed
-            for recipe in response_json['results']:
-                print(recipe['usedIngredientCount'])
+            for recipe in response_json['results']:                
                 if recipe['spoonacularScore'] >= 75:
                     relevant_info = self.get_relevant_info(recipe)
                     relevant_recipes.append(relevant_info)
@@ -70,8 +71,9 @@ def main():
     recommender = RecipeRecommender(api_key=jongha_key)
     ingredients = ['tomato', 'cheese']
     num_recipes = 5
+    use_pantry = False
 
-    recipe_recs = recommender.get_recipes_by_ingredients(ingredients, num_recipes=num_recipes)
+    recipe_recs = recommender.get_recipes_by_ingredients(ingredients, use_pantry, num_recipes=num_recipes)
     print(recipe_recs)
 
 if __name__ == "__main__":
