@@ -3,10 +3,6 @@
     border-right: 10px;
 }
 
-.detected-ingredient-list {
-    background-color: white !important;
-}
-
 .photo-content {
     overflow: visible !important;
     display: flex;
