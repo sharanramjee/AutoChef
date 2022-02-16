@@ -23,7 +23,7 @@ class RecipeRecommender:
     def get_relevant_info(self, recipe):
         relevant_params = [
             'missedIngredientCount', 'usedIngredientCount', 'missedIngredients', 
-            'usedIngredients', 'title', 'image', 'summary',
+            'usedIngredients', 'title', 'image', 'summary', "id",
             'spoonacularScore', 'healthScore', 'aggregateLikes', 'veryPopular',
         ]
         relevant_info = {param: recipe[param] for param in relevant_params}
@@ -43,18 +43,21 @@ class RecipeRecommender:
         # Manually only filtering top recipes through a loop
         relevant_recipes = []
         num_calls = 0
-        num_results_per_call = 10
+        num_results_per_call = 20
 
         # num_calls < 3 to avoid too much calls to spoonacular
-        while num_calls < 3 and len(relevant_recipes) < num_recipes:
+        # while num_calls < 3 and len(relevant_recipes) < num_recipes:
+        while num_calls < 3:
             response_json = self.get_recipes_call(ingredients, use_pantry, num_calls, num_results_per_call)
 
             # Only add result if spoonacularscore >= 75:
             # TEMP: Can be changed
-            for recipe in response_json['results']:                
-                if recipe['spoonacularScore'] >= 75:
-                    relevant_info = self.get_relevant_info(recipe)
-                    relevant_recipes.append(relevant_info)
+            for recipe in response_json['results']: 
+                relevant_info = self.get_relevant_info(recipe)
+                relevant_recipes.append(relevant_info)               
+                # if recipe['spoonacularScore'] >= 75:
+                #     relevant_info = self.get_relevant_info(recipe)
+                #     relevant_recipes.append(relevant_info)
             
             # To offset results from the same call
             num_calls += 1
@@ -62,7 +65,7 @@ class RecipeRecommender:
         # Sort by missedIngredientCount, then spoonacularScore
         sorted_recipes = sorted(relevant_recipes, key=lambda d: (d['missedIngredientCount'], -d['usedIngredientCount'], -d['spoonacularScore'], -d['aggregateLikes'])) 
 
-        return sorted_recipes
+        return sorted_recipes[:num_recipes]
 
 def main():
     jongha_key = '8ed35011298e4cd5b31f57c78d4b9055'
