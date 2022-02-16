@@ -47,7 +47,7 @@ class IngredientSelector extends React.Component {
   componentDidMount() {
     axios.get('/photosOfUser/' + this.props.curr_user_id)
     .then(response => {
-      console.log()
+      console.log(response.data.objects);
       let photo_list = response.data.photos;
       photo_list.sort(function(a, b){
         return b.date - a.date;
@@ -59,15 +59,15 @@ class IngredientSelector extends React.Component {
       };
       this.setState({
         photo: photo_list[photo_list.length-1],
-        detected_ingredient: labels_dict,
+        detected_ingredients: labels_dict,
       });
     })
     .catch(err => {
       console.log(err.response);
     });
     // Hard-code some detected ingredients
-    let detected_example = {'apple': true, 'flour': true, 'sugar': true};
-    this.setState({detected_ingredients: detected_example});
+    // let detected_example = {'apple': true, 'flour': true, 'sugar': true};
+    // this.setState({detected_ingredients: detected_example});
 
   }
 
