@@ -46,6 +46,7 @@
 
 .recipe-card {
     width: 130vh !important;
+    margin-bottom: 10px;
 }
 
 .recipe-header {
@@ -53,5 +54,5 @@
 }
 
 .recipe-thumbnail {
-    width: 20% !important;
+    width: 100% !important;
 }

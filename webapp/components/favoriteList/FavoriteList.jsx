@@ -32,6 +32,19 @@ class FavoriteList extends React.Component {
     // });
   }
 
+  componentDidUpdate(prevProps) {
+    if (prevProps.updateFavoritesStatus !== this.props.updateFavoritesStatus) {
+      axios.get('/getFavorites')
+      .then(response => {
+        this.setState({favorites: response.data});
+      })
+      .catch(err => {
+        console.log(err.response);
+      })
+      this.props.updateFavorites(false);
+    }
+  }
+
   render() {
     if (this.state.favorites) {
       let favoriteList = [];
@@ -39,7 +52,7 @@ class FavoriteList extends React.Component {
         favoriteList.push(
           <div key = {i}>
             <ListItem button component={Link} to={'/favorites/' + this.state.favorites[i].id}>
-              <ListItemText className='favorite-recipe' primary={this.state.favorites[i].name}/>
+              <ListItemText className='favorite-recipe' primary={this.state.favorites[i].title}/>
             </ListItem>
             <Divider />
           </div>

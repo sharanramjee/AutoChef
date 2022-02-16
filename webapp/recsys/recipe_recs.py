@@ -23,10 +23,13 @@ class RecipeRecommender:
     def get_relevant_info(self, recipe):
         relevant_params = [
             'missedIngredientCount', 'usedIngredientCount', 'missedIngredients', 
-            'usedIngredients', 'title', 'image', 'summary', "id",
+            'usedIngredients', 'title', 'image', 'summary', 'id',
             'spoonacularScore', 'healthScore', 'aggregateLikes', 'veryPopular',
         ]
         relevant_info = {param: recipe[param] for param in relevant_params}
+        # Rename id as spoonacularId
+        relevant_info['spoonacularId'] = relevant_info['id']
+        del relevant_info['id']
 
         # Get missing and used ingredient names
         relevant_info['missedIngredient_names'] = [missed['name'] for missed in relevant_info['missedIngredients']]

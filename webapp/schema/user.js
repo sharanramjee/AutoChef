@@ -24,7 +24,7 @@ var userSchema = new mongoose.Schema({
     password_digest: String,    // Password digest.
     salt: String,               // Password salt.
     mentioned: [mongoose.Schema.Types.ObjectId],    // List of photos that mention user.
-    favorites: [String],    // List of recipe IDs favorited by user.
+    favorites: [Number],    // List of recipe IDs favorited by user.
 });
 
 // the schema is useless so far

@@ -12,10 +12,7 @@ import UserDetail from './components/userDetail/UserDetail';
 import FavoriteList from './components/favoriteList/FavoriteList';
 import IngredientSelector from './components/ingredientSelector/ingredientSelector';
 import RecommendedRecipes from './components/recommendedRecipes/RecommendedRecipes';
-
-import UserPhotos from './components/userPhotos/UserPhotos';
 import LoginRegister from './components/LoginRegister/LoginRegister';
-import Favorites from './components/favorites/Favorites';
 
 class AutoChef extends React.Component {
   constructor(props) {
@@ -25,6 +22,7 @@ class AutoChef extends React.Component {
       isLoggedIn: true,
       login_name: undefined,
       current_user: undefined,
+      update_favorites: false,
       upload_clicked: false,
       query_ingredients: [],
       query_include_pantry: true,
@@ -33,6 +31,7 @@ class AutoChef extends React.Component {
     this.changeLoggedIn = this.changeLoggedIn.bind(this);
     this.changeUpload = this.changeUpload.bind(this);
     this.changeQuery = this.changeQuery.bind(this);
+    this.updateFavorites = this.updateFavorites.bind(this);
   }
 
   componentDidMount() {
@@ -72,6 +71,12 @@ class AutoChef extends React.Component {
     });
   }
 
+  updateFavorites(update_status) {
+    if(this.state.update_favorites !== update_status) {
+      this.setState({update_favorites: update_status});
+    }
+  }
+
   render() {
     const theme = createTheme({
       palette: {
@@ -95,7 +100,7 @@ class AutoChef extends React.Component {
         <div className='cs142-main-topbar-buffer'/>
         <Grid item sm={3}>
           <Paper elevation={0} className='cs142-main-grid-item'>
-            {this.state.current_user ? <FavoriteList /> : null}
+            {this.state.current_user ? <FavoriteList updateFavorites={this.updateFavorites} updateFavoritesStatus={this.state.update_favorites} /> : null}
           </Paper>
         </Grid>
         <Grid item sm={9}>
@@ -108,13 +113,13 @@ class AutoChef extends React.Component {
                 render={props => <LoginRegister {...props} changeLoggedIn={this.changeLoggedIn} /> }
                 />
               )}
-              {this.state.current_user ? (
+              {/* {this.state.current_user ? (
                 <Route path='/favorites'
                 render={props => <Favorites {...props} /> }
                 />
               ) : (
                 <Redirect path='/favorites' to='/login-register' />
-              )}
+              )} */}
               {this.state.current_user ? (
                 <Route path='/users/:userId'
                   render={props => <UserDetail {...props} curr_user_id={this.state.current_user._id} changeView={this.changeView} /> }
@@ -122,14 +127,14 @@ class AutoChef extends React.Component {
               ) : (
                 <Redirect path='/users/:userId' to='/login-register' />
               )}
-              {this.state.current_user ? (
+              {/* {this.state.current_user ? (
                 <Route path='/photos/:userId'
                   render={props => <UserPhotos changeView={this.changeView} changeUpload={this.changeUpload}
                   upload_clicked={this.state.upload_clicked} curr_user_id={this.state.current_user._id} {...props} /> }
                 />
               ) : (
                 <Redirect path='/photos/:userId' to='/login-register' />
-              )}
+              )} */}
               {this.state.current_user ? (
                 <Route path='/ingredient-selector'
                   render={props => <IngredientSelector changeQuery={this.changeQuery} curr_user_id={this.state.current_user._id} {...props} /> }
@@ -139,7 +144,8 @@ class AutoChef extends React.Component {
               )}
               {this.state.current_user ? (
                 <Route path='/recommended-recipes'
-                  render={props => <RecommendedRecipes query_ingredients={this.state.query_ingredients} query_include_pantry={this.state.query_include_pantry} {...props} /> }
+                  render={props => <RecommendedRecipes curr_user_id={this.state.current_user._id} updateFavorites={this.updateFavorites}
+                  query_ingredients={this.state.query_ingredients} query_include_pantry={this.state.query_include_pantry} {...props} /> }
                 />
               ) : (
                 <Redirect path='/recommended-recipes' to='/login-register' />

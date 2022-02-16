@@ -58,11 +58,10 @@ class UserDetail extends React.Component {
             <strong>Occupation: </strong> {this.state.user.occupation}
             <br/><br/>
           </Typography>
-          <Button variant='contained' color='primary' className='cs142-userDetail-button' component='a'
+          {/* <Button variant='contained' color='primary' className='cs142-userDetail-button' component='a'
             href = {'#/photos/' + this.state.user._id}>
             Photos
           </Button>
-
           <br/> <br/> <Divider/>
           <Typography variant='h5'>Mentioned in:</Typography>
           <br/>
@@ -72,7 +71,7 @@ class UserDetail extends React.Component {
             })
           ) : (
             <Typography>No mentions</Typography>
-          )}
+          )} */}
         </div>
       );
     }

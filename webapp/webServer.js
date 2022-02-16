@@ -67,6 +67,7 @@ const corsOptions ={
 app.use(cors(corsOptions)) // Use this after the variable declaration
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// ML Object Detection Endpoint Setup
 const aiplatform = require('@google-cloud/aiplatform');
 const endpointId = "4877442376907358208";
 const project = 'cs-329s-final-project';
@@ -273,92 +274,92 @@ app.post('/admin/logout', function (request, response) {
     });
 });
 
-// Do not allow unpermitted users
-app.get('/unpermittedUsers/list', function(request, response) {
-    if (!request.session.user_id) {
-        response.status(401).send('User not logged in');
-        return;
-    }
-    let curr_user_id = request.session.user_id;
-    User.find({}, (_, all_users) => {
-        let new_users = all_users.filter(user => String(user._id) !== String(curr_user_id));
-        async.eachOf(
-            new_users, 
-            function(user, idx, callback) {
-                let {_id, first_name, last_name} = user;
-                new_users[idx] = {_id, first_name, last_name};
-                callback();
-            },
-            err => {
-                if (err) {
-                    console.log(err);
-                } else {
-                    response.status(200).send(new_users);
-                }
-            }
-        );
-    });
-});
+// // Do not allow unpermitted users
+// app.get('/unpermittedUsers/list', function(request, response) {
+//     if (!request.session.user_id) {
+//         response.status(401).send('User not logged in');
+//         return;
+//     }
+//     let curr_user_id = request.session.user_id;
+//     User.find({}, (_, all_users) => {
+//         let new_users = all_users.filter(user => String(user._id) !== String(curr_user_id));
+//         async.eachOf(
+//             new_users, 
+//             function(user, idx, callback) {
+//                 let {_id, first_name, last_name} = user;
+//                 new_users[idx] = {_id, first_name, last_name};
+//                 callback();
+//             },
+//             err => {
+//                 if (err) {
+//                     console.log(err);
+//                 } else {
+//                     response.status(200).send(new_users);
+//                 }
+//             }
+//         );
+//     });
+// });
 
-/*
- * URL /user/list - Return all the User objects.
- */
-app.get('/user/list', function (request, response) {
-    if (!request.session.user_id) {
-        response.status(401).send('User not logged in');
-        return;
-    }
-    User.find({}, function(_, users) {
-        let list_of_users = users;
-        if (users.length === 0) {
-            console.log('No users');
-            response.status(400).send('No users');
-            return;
-        }
-        async.eachOf(users, function(user, idx, callback) {
-            let {_id, first_name, last_name} = user;
-            list_of_users[idx] = {_id, first_name, last_name};
-            callback();
-        }, (err) => {
-            if (err) {
-                console.log('/user/list error:', err);
-                response.status(400).send(JSON.stringify(err));
-                return;
-            }
-            else {
-                response.status(200).send(list_of_users);
-            }
-        })
-    });
-});
+// /*
+//  * URL /user/list - Return all the User objects.
+//  */
+// app.get('/user/list', function (request, response) {
+//     if (!request.session.user_id) {
+//         response.status(401).send('User not logged in');
+//         return;
+//     }
+//     User.find({}, function(_, users) {
+//         let list_of_users = users;
+//         if (users.length === 0) {
+//             console.log('No users');
+//             response.status(400).send('No users');
+//             return;
+//         }
+//         async.eachOf(users, function(user, idx, callback) {
+//             let {_id, first_name, last_name} = user;
+//             list_of_users[idx] = {_id, first_name, last_name};
+//             callback();
+//         }, (err) => {
+//             if (err) {
+//                 console.log('/user/list error:', err);
+//                 response.status(400).send(JSON.stringify(err));
+//                 return;
+//             }
+//             else {
+//                 response.status(200).send(list_of_users);
+//             }
+//         })
+//     });
+// });
 
-// Get list of users to mention
-app.get('/user/selectMentions', function(request, response) {
-    if (!request.session.user_id) {
-        response.status(401).send('User not logged in');
-        return;
-    }
-    User.find({}, (_, users) => {
-        let list_of_users = users;
-        async.eachOf(
-            users,
-            function(user, idx, callback) {
-                let {_id, first_name, last_name} = user;
-                list_of_users[idx] = {id: _id, display: `${first_name} ${last_name}`};
-                callback();
-            },
-            err => {
-                if (err) {
-                    console.log('/user/selectMentions error:', err);
-                    response.status(400).send(JSON.stringify(err));
-                    return;
-                } else {
-                    response.status(200).send(list_of_users);
-                }
-            }
-        );
-    });
-});
+// // Get list of users to mention
+// app.get('/user/selectMentions', function(request, response) {
+//     if (!request.session.user_id) {
+//         response.status(401).send('User not logged in');
+//         return;
+//     }
+//     User.find({}, (_, users) => {
+//         let list_of_users = users;
+//         async.eachOf(
+//             users,
+//             function(user, idx, callback) {
+//                 let {_id, first_name, last_name} = user;
+//                 list_of_users[idx] = {id: _id, display: `${first_name} ${last_name}`};
+//                 callback();
+//             },
+//             err => {
+//                 if (err) {
+//                     console.log('/user/selectMentions error:', err);
+//                     response.status(400).send(JSON.stringify(err));
+//                     return;
+//                 } else {
+//                     response.status(200).send(list_of_users);
+//                 }
+//             }
+//         );
+//     });
+// });
 
 /*
  * URL /user/:id - Return the information for User (id)
@@ -375,16 +376,16 @@ app.get('/user/:id', function (request, response) {
             response.status(400).send('User with _id:' + id + ' not found.');
             return;
         }
-        let {_id, first_name, last_name, location, description, occupation, mentioned} = user;
-        let requested_user = {_id, first_name, last_name, location, description, occupation, mentioned};
+        let {_id, first_name, last_name, location, description, occupation, mentioned, favorites} = user;
+        let requested_user = {_id, first_name, last_name, location, description, occupation, mentioned, favorites};
         response.status(200).send(requested_user);
     });
 });
 
 /*
- * URL /photosOfUser/:id - Return the Photos for User (id)
+ * URL /ingredientDetector/:id - Return latest photo of user (id) along with detected ingredients
  */
-app.get('/photosOfUser/:id', function (request, response) {
+app.get('/ingredientDetector/:id', function (request, response) {
     if (!request.session.user_id) {
         response.status(401).send('User not logged in');
         return;
@@ -445,155 +446,185 @@ app.get('/photosOfUser/:id', function (request, response) {
             requested_photos.sort(function(a, b) {
                 return b.date - a.date;
             });
-            const fname = requested_photos[requested_photos.length - 1].file_name;
-            predictObjects(`./images/${fname}`).then(labels => {
-                // let labels_obj = {obj_labels : labels}
-                const resp = {
-                    photos: requested_photos,
-                    objects: labels,
-                }
-                response.status(200).send(resp);
-                console.log(`inside then labels = ${labels}`);
-            }).catch((e) => {
-                console.log(`inference failed ${e}`);
-                return;
-            })
-            // response.status(200).send(requested_photos);
+            let latest_photo = requested_photos[requested_photos.length - 1]
+            const latest_photo_filename = latest_photo.file_name;
+            // predictObjects(`./images/${latest_photo_filename}`).then(labels => {
+            //     const photo_labels = {
+            //         photo: latest_photo,
+            //         ingredients: labels,
+            //     }
+            //     response.status(200).send(photo_labels);
+            // }).catch((e) => {
+            //     console.log(`Ingredient Detection Inference Failed: ${e}`);
+            //     return;
+            // })
+            response.status(200).send({photo: latest_photo, ingredients: undefined});
         });
     });
 });
 
-// Photos with Mentions
-app.get('/photosWithMentions/:photo_id', function(request, response) {
-    if (!request.session.user_id) {
-        response.status(401).send('User not logged in');
-        return;
-    }
-    let photo_id = request.params.photo_id;
-    Photo.findOne({_id: photo_id}, function(err, photo) {
-        if (err) {
-            response.status(400).send('Invalid photo ID');
-            return;
-        }
-        User.findOne({_id: photo.user_id}, function(_, photo_owner) {
-        let new_photo = {
-            _id: photo_id,
-            photo_owner_id: photo_owner._id,
-            file_name: photo.file_name,
-            photo_owner_first_name: photo_owner.first_name,
-            photo_owner_last_name: photo_owner.last_name,
-            users_permitted: photo.users_permitted
-        };
-        response.status(200).send(new_photo);
-        });
-    });
-});
+// // Photos with Mentions
+// app.get('/photosWithMentions/:photo_id', function(request, response) {
+//     if (!request.session.user_id) {
+//         response.status(401).send('User not logged in');
+//         return;
+//     }
+//     let photo_id = request.params.photo_id;
+//     Photo.findOne({_id: photo_id}, function(err, photo) {
+//         if (err) {
+//             response.status(400).send('Invalid photo ID');
+//             return;
+//         }
+//         User.findOne({_id: photo.user_id}, function(_, photo_owner) {
+//         let new_photo = {
+//             _id: photo_id,
+//             photo_owner_id: photo_owner._id,
+//             file_name: photo.file_name,
+//             photo_owner_first_name: photo_owner.first_name,
+//             photo_owner_last_name: photo_owner.last_name,
+//             users_permitted: photo.users_permitted
+//         };
+//         response.status(200).send(new_photo);
+//         });
+//     });
+// });
 
-// Comments
-app.post('/commentsOfPhoto/:photo_id', function(request, response) {
-    if (!request.session.user_id) {
-        response.status(401).send('User not logged in');
-        return;
-    }
-    let photo_id = request.params.photo_id;
-    let curr_user = request.session.user_id;
-    let comment_text = request.body.comment;
-    let mentions_to_add = request.body.mentions;
-    if (!comment_text) {
-        response.status(400).send('Comment is empty');
-        return;
-    }
-    Photo.findOne({_id: photo_id}, function(err, photo) {
-        if (err) {
-            console.log('Photo with id:' + photo_id + ' not found.');
-            response.status(400).send('Photo with id:' + photo_id + ' not found.');
-            return;
-        }
-        let curr_date_time = new Date();
-        photo.comments = photo.comments.concat([
-            {comment: comment_text, date_time: curr_date_time, user_id: curr_user}
-        ]);
-        photo.save();
-        async.each(
-            mentions_to_add,
-            function(user, callback) {
-                User.findOne({_id: user}, function(err, user) {
-                    if (err) {
-                        console.log('User with _id:' + user + ' not found.');
-                        response.status(400).send('User with _id:' + user + ' not found.');
-                        return;
-                    }
-                    user.mentioned.push(photo_id);
-                    user.save();
-                    callback();
-                });
-            },
-            function(err) {
-                if (err) {
-                    console.log('Could not add mentions');
-                    response.status(400).send('Could not add mentions');
-                    return;
-                }
-                response.status(200).send();
-            }
-        );
-    });
-});
+// // Comments
+// app.post('/commentsOfPhoto/:photo_id', function(request, response) {
+//     if (!request.session.user_id) {
+//         response.status(401).send('User not logged in');
+//         return;
+//     }
+//     let photo_id = request.params.photo_id;
+//     let curr_user = request.session.user_id;
+//     let comment_text = request.body.comment;
+//     let mentions_to_add = request.body.mentions;
+//     if (!comment_text) {
+//         response.status(400).send('Comment is empty');
+//         return;
+//     }
+//     Photo.findOne({_id: photo_id}, function(err, photo) {
+//         if (err) {
+//             console.log('Photo with id:' + photo_id + ' not found.');
+//             response.status(400).send('Photo with id:' + photo_id + ' not found.');
+//             return;
+//         }
+//         let curr_date_time = new Date();
+//         photo.comments = photo.comments.concat([
+//             {comment: comment_text, date_time: curr_date_time, user_id: curr_user}
+//         ]);
+//         photo.save();
+//         async.each(
+//             mentions_to_add,
+//             function(user, callback) {
+//                 User.findOne({_id: user}, function(err, user) {
+//                     if (err) {
+//                         console.log('User with _id:' + user + ' not found.');
+//                         response.status(400).send('User with _id:' + user + ' not found.');
+//                         return;
+//                     }
+//                     user.mentioned.push(photo_id);
+//                     user.save();
+//                     callback();
+//                 });
+//             },
+//             function(err) {
+//                 if (err) {
+//                     console.log('Could not add mentions');
+//                     response.status(400).send('Could not add mentions');
+//                     return;
+//                 }
+//                 response.status(200).send();
+//             }
+//         );
+//     });
+// });
 
-// Add photo to favorites
-app.post('/addFavorite', function(request, response) {
+// Add/remove recipe to/from favorites
+app.post('/favoriteRecipe', function(request, response) {
     if (!request.session.user_id) {
         response.status(401).send('User not logged in');
         return;
     }
+    let recipe_info = request.body.recipe;
+    let recipe_id = recipe_info.spoonacularId;
     let user_id = request.session.user_id;
-    let photo_id = request.body.photo_id;
     User.findOne({_id: user_id}, function(err, user) {
         if (err) {
             console.log('User with _id:' + user_id + ' not found.');
             response.status(400).send('User with _id:' + user_id + ' not found.');
             return;
         }
-        if (!user.favorites.includes(photo_id)) {
-            user.favorites.push(photo_id);
+        if (!user.favorites.includes(recipe_id)) {
+            // Favorite recipe
+            user.favorites.push(recipe_id);
+            user.save();
+            Recipe.create({
+                aggregateLikes: recipe_info.aggregateLikes,
+                healthScore: recipe_info.healthScore,
+                image: recipe_info.image,
+                missedIngredientCount: recipe_info.missedIngredientCount,
+                missedIngredient_names: recipe_info.missedIngredient_names,
+                spoonacularScore: recipe_info.spoonacularScore,
+                spoonacularId: recipe_info.spoonacularId,
+                summary: recipe_info.summary,
+                title: recipe_info.title,
+                usedIngredientCount: recipe_info.usedIngredientCount,
+                usedIngredient_names: recipe_info.usedIngredient_names,
+                veryPopular: recipe_info.veryPopular
+            },
+            function(err, newRecipe) {
+                if (err) {
+                    console.log('Cannot create recipe');
+                    response.status(400).send('Cannot create recipe');
+                    return;
+                }
+                newRecipe.save();
+                response.status(200).send();
+            });
+        }
+        else {
+            // Unfavorite recipe
+            let recipe_idx = user.favorites.indexOf(recipe_id);
+            user.favorites.splice(recipe_idx, 1);
             user.save();
         }
         response.status(200).send();
     });
 });
 
-// Like or unlike photo
-app.post('/likePhoto/:photo_id', function(request, response) {
-    if (!request.session.user_id) {
-        response.status(401).send('User not logged in');
-        return;
-    }
-    let photo_id = request.params.photo_id;
-    let user_id = request.session.user_id;
-    Photo.findOne({_id: photo_id}, function(err, photo) {
-        if (err) {
-            console.log('Photo with id:' + photo_id + ' not found.');
-            response.status(400).send('Photo with id:' + photo_id + ' not found.');
-            return;
-        }
-        let user_idx = photo.liked_by.indexOf(user_id);
-        if (request.body.like) {
-            if (user_idx >= 0) {
-                response.status(400).send('Photo already liked.');
-                return;
-            }
-            photo.liked_by.push(user_id);
-        } else {
-            if (user_idx == -1) {
-                response.status(400).send('Photo not liked yet.');
-                return;
-            }
-            photo.liked_by.splice(user_idx, 1);
-        }
-        photo.save();
-        response.status(200).send();
-    });
-});
+// // Like or unlike photo
+// app.post('/likePhoto/:photo_id', function(request, response) {
+//     if (!request.session.user_id) {
+//         response.status(401).send('User not logged in');
+//         return;
+//     }
+//     let photo_id = request.params.photo_id;
+//     let user_id = request.session.user_id;
+//     Photo.findOne({_id: photo_id}, function(err, photo) {
+//         if (err) {
+//             console.log('Photo with id:' + photo_id + ' not found.');
+//             response.status(400).send('Photo with id:' + photo_id + ' not found.');
+//             return;
+//         }
+//         let user_idx = photo.liked_by.indexOf(user_id);
+//         if (request.body.like) {
+//             if (user_idx >= 0) {
+//                 response.status(400).send('Photo already liked.');
+//                 return;
+//             }
+//             photo.liked_by.push(user_id);
+//         } else {
+//             if (user_idx == -1) {
+//                 response.status(400).send('Photo not liked yet.');
+//                 return;
+//             }
+//             photo.liked_by.splice(user_idx, 1);
+//         }
+//         photo.save();
+//         response.status(200).send();
+//     });
+// });
 
 // Remove photo from favorites
 app.get('/removeFavorite/:photo_id', function(request, response) {
@@ -661,8 +692,8 @@ app.get('/getFavorites', function(request, response) {
                         return;
                     }
                     favorites.push({
-                        name: recipe.name,
-                        id: recipe.id
+                        title: recipe.title,
+                        spoonacularId: recipe.spoonacularId
                     });
                     callback();
                 });

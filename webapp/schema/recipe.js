@@ -29,8 +29,18 @@ var mongoose = require('mongoose');
 
 // create a schema for Recipe
 var recipeSchema = new mongoose.Schema({
-    id: Number,     // Spoonacular ID of the recipe
-    name: String,   // Name of the recipe
+    aggregateLikes: Number,             // Number of likes on Spoonacular
+    healthScore: Number,                // Spoonacular health score
+    image: String,                      // Link to image of recipe
+    missedIngredientCount: Number,      // Number of missing ingredients
+    missedIngredient_names: [String],   // List of missing ingredients
+    spoonacularScore: Number,           // Spoonacular score
+    spoonacularId: Number,              // Spoonacular ID of the recipe
+    summary: String,                    // Summary of the recipe
+    title: String,                      // Name of the recipe
+    usedIngredientCount: Number,        // Number of used ingredients
+    usedIngredient_names: [String],     // List of used ingredients
+    veryPopular: Boolean,               // Spoonacular populairty
 });
 
 // the schema is useless so far
