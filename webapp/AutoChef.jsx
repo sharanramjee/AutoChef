@@ -11,7 +11,7 @@ import TopBar from './components/topBar/TopBar';
 import UserDetail from './components/userDetail/UserDetail';
 import FavoriteList from './components/favoriteList/FavoriteList';
 import IngredientSelector from './components/ingredientSelector/ingredientSelector';
-import SuggestedRecipes from './components/suggestedRecipes/SuggestedRecipes';
+import RecommendedRecipes from './components/recommendedRecipes/RecommendedRecipes';
 
 import UserPhotos from './components/userPhotos/UserPhotos';
 import LoginRegister from './components/LoginRegister/LoginRegister';
@@ -138,11 +138,11 @@ class AutoChef extends React.Component {
                 <Redirect path='/ingredient-selector' to='/login-register' />
               )}
               {this.state.current_user ? (
-                <Route path='/suggested-recipes'
-                  render={props => <SuggestedRecipes query_ingredients={this.state.query_ingredients} query_include_pantry={this.state.query_include_pantry} {...props} /> }
+                <Route path='/recommended-recipes'
+                  render={props => <RecommendedRecipes query_ingredients={this.state.query_ingredients} query_include_pantry={this.state.query_include_pantry} {...props} /> }
                 />
               ) : (
-                <Redirect path='/suggested-recipes' to='/login-register' />
+                <Redirect path='/recommended-recipes' to='/login-register' />
               )}
               {this.state.current_user ? (
                 <Redirect path='/' to={`/users/${this.state.current_user._id}`} />

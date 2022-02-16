@@ -692,32 +692,6 @@ app.post('/user', function(request, response) {
     }
 });
 
-// Suggested recipes
-app.get('/suggested-recipes/:recipe_query', function(request, response) {
-    if (!request.session.user_id) {
-        response.status(401).send('User not logged in');
-        return;
-    }
-    let recipe_query = request.params.recipe_query;
-    let recipe_args = recipe_query.split('&')
-    let query_include_pantry = (recipe_args[0].split('=')[1] === 'true');
-    let query_ingredients = recipe_args[1].split('=')[1].split(',+');
-    console.log(query_include_pantry, query_ingredients);
-
-    // let user_id = request.session.user_id;
-    // User.findOne({_id: user_id}, function(err, user) {
-    //     if (err) {
-    //         console.log('User with _id:' + user_id + ' not found.');
-    //         response.status(400).send('User with _id:' + user_id + ' not found.');
-    //         return;
-    //     }
-    //     const photo_idx = user.favorites.indexOf(photo_id);
-    //     user.favorites.splice(photo_idx, 1);
-    //     user.save();
-    //     response.status(200).send();
-    // });
-});
-
 var server = app.listen(3000, function () {
     var port = server.address().port;
     console.log('Listening at http://localhost:' + port + ' exporting the directory ' + __dirname);

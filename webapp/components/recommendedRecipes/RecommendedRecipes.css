@@ -3,6 +3,10 @@
     border-right: 10px;
 }
 
+#rec-recipe-header {
+    margin-bottom: 10px !important;
+}
+
 .photo-content {
     overflow: visible !important;
     display: flex;
@@ -38,4 +42,16 @@
 .rect-tag-crop {
     border: 2px solid white;
     position: absolute;
+}
+
+.recipe-card {
+    width: 130vh !important;
+}
+
+.recipe-header {
+    height: 20px;
+}
+
+.recipe-thumbnail {
+    width: 20% !important;
 }

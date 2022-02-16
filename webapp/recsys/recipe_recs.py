@@ -1,14 +1,13 @@
 import requests
 
-class RecipeRecommender():
-    
+class RecipeRecommender:
     def __init__(self, api_key):
         self.api_key = api_key
 
     def get_recipes_call(self, ingredients, use_pantry, num_calls, num_results_per_call):
         params = {
             'apiKey': self.api_key,
-            'includeIngredients': ",".join(ingredients), 'ignorePantry': use_pantry,
+            'includeIngredients': ",".join(ingredients), 'ignorePantry': not use_pantry,
             'number': num_results_per_call,
             'type': 'main course', 'fillIngredients': True, 'addRecipeInformation': True,
             'sort': 'min-missing-ingredients', 'sortDirection': 'asc',
@@ -41,7 +40,6 @@ class RecipeRecommender():
 
 
     def get_recipes_by_ingredients(self, ingredients, use_pantry, num_recipes):
-
         # Manually only filtering top recipes through a loop
         relevant_recipes = []
         num_calls = 0

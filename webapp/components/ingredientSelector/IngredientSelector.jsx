@@ -216,7 +216,7 @@ class IngredientSelector extends React.Component {
     }
     let include_panty_status = this.state.include_pantry;
     this.props.changeQuery(ingredient_list, include_panty_status);
-    window.location.href = '#/suggested-recipes';
+    window.location.href = '#/recommended-recipes';
   }
 
   render() {
@@ -320,7 +320,7 @@ class IngredientSelector extends React.Component {
           </FormGroup>
           <br/> <Divider/>
           <Button variant='contained' color='primary' size='small' onClick={this.handleSuggestButtonClick}>
-            SUGGEST RECIPES
+            RECOMMEND RECIPES
           </Button>
         </div>
       );
