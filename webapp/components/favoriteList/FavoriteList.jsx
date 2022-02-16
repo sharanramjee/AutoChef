@@ -18,7 +18,11 @@ class FavoriteList extends React.Component {
   componentDidMount() {
     axios.get('/getFavorites')
     .then(response => {
-      this.setState({favorites: response.data});
+      let favorite_list = response.data;
+      favorite_list.sort(function(a, b){
+        return a.date_time - b.date_time;
+      });
+      this.setState({favorites: favorite_list});
     })
     .catch(err => {
       console.log(err.response);
@@ -36,12 +40,16 @@ class FavoriteList extends React.Component {
     if (prevProps.updateFavoritesStatus !== this.props.updateFavoritesStatus) {
       axios.get('/getFavorites')
       .then(response => {
-        this.setState({favorites: response.data});
+        let favorite_list = response.data;
+        favorite_list.sort(function(a, b){
+          return a.date_time - b.date_time;
+        });
+        this.setState({favorites: favorite_list});
+        this.props.updateFavorites(false);
       })
       .catch(err => {
         console.log(err.response);
       })
-      this.props.updateFavorites(false);
     }
   }
 

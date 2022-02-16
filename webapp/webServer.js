@@ -559,6 +559,7 @@ app.post('/favoriteRecipe', function(request, response) {
             // Favorite recipe
             user.favorites.push(recipe_id);
             user.save();
+            let timestamp = new Date().valueOf();
             Recipe.create({
                 aggregateLikes: recipe_info.aggregateLikes,
                 healthScore: recipe_info.healthScore,
@@ -566,20 +567,21 @@ app.post('/favoriteRecipe', function(request, response) {
                 missedIngredientCount: recipe_info.missedIngredientCount,
                 missedIngredient_names: recipe_info.missedIngredient_names,
                 spoonacularScore: recipe_info.spoonacularScore,
-                spoonacularId: recipe_info.spoonacularId,
+                spoonacularId: parseInt(recipe_info.spoonacularId),
                 summary: recipe_info.summary,
                 title: recipe_info.title,
                 usedIngredientCount: recipe_info.usedIngredientCount,
                 usedIngredient_names: recipe_info.usedIngredient_names,
-                veryPopular: recipe_info.veryPopular
+                veryPopular: recipe_info.veryPopular,
+                date_time: timestamp,
             },
             function(err, newRecipe) {
                 if (err) {
-                    console.log('Cannot create recipe');
+                    console.log('Cannot create recipe:', err);
                     response.status(400).send('Cannot create recipe');
                     return;
                 }
-                newRecipe.save();
+                newRecipe.update();
                 response.status(200).send();
             });
         }
@@ -685,9 +687,9 @@ app.get('/getFavorites', function(request, response) {
         async.each(
             user_favorites,
             (recipe_id, callback) => {
-                Recipe.findOne({_id: recipe_id}, function(err, recipe) {
+                Recipe.findOne({spoonacularId: parseInt(recipe_id)}, function(err, recipe) {
                     if (err) {
-                        console.log('Recipe with id:' + receipe_id + ' not found.');
+                        console.log('Recipe with id:' + recipe_id + ' not found.');
                         response.status(400).send('Recipe with id:' + recipe_id + ' not found.');
                         return;
                     }
@@ -721,8 +723,8 @@ app.post('/photos/new', function(request, response) {
                 response.status(400).send('Invalid file');
                 return;
         }
-        var timestamp = new Date().valueOf();
-        var filename = 'U' + String(timestamp) + request.file.originalname;
+        let timestamp = new Date().valueOf();
+        let filename = 'U' + String(timestamp) + request.file.originalname;
         fs.writeFile('./images/' + filename, request.file.buffer, function(err) {
             if (err) {
                 console.log('Cannot write file');

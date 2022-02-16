@@ -145,7 +145,8 @@ class AutoChef extends React.Component {
               {this.state.current_user ? (
                 <Route path='/recommended-recipes'
                   render={props => <RecommendedRecipes curr_user_id={this.state.current_user._id} updateFavorites={this.updateFavorites}
-                  query_ingredients={this.state.query_ingredients} query_include_pantry={this.state.query_include_pantry} {...props} /> }
+                  updateFavoritesStatus={this.state.update_favorites} query_ingredients={this.state.query_ingredients}
+                  query_include_pantry={this.state.query_include_pantry} {...props} /> }
                 />
               ) : (
                 <Redirect path='/recommended-recipes' to='/login-register' />

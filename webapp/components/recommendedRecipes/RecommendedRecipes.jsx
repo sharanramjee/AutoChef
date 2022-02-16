@@ -29,9 +29,6 @@ class RecommendedRecipes extends React.Component {
     axios.get('user/' + this.props.curr_user_id)
     .then(response => {
       this.setState({user: response.data});
-      // this.props.changeView(
-      //   response.data.first_name + ' ' + response.data.last_name + '\'s profile'
-      // );
     })
     .catch(err => {
       console.log(err.response);
@@ -87,14 +84,26 @@ class RecommendedRecipes extends React.Component {
     this.setState({recipes: rec_recipes});
   }
 
-  handleFavoriteChange(recipe_object){
-    axios.post('/favoriteRecipe', {recipe: recipe_object})
-      .then(() => {
-        this.props.updateFavorites(true);
+  componentDidUpdate(prevProps) {
+    if (prevProps.updateFavoritesStatus !== this.props.updateFavoritesStatus) {
+      axios.get('user/' + this.props.curr_user_id)
+      .then(response => {
+        this.setState({user: response.data});
       })
       .catch(err => {
         console.log(err.response);
-      });
+      })
+    }
+  }
+
+  handleFavoriteChange = (recipe_object) => (_) => {
+    axios.post('/favoriteRecipe', {recipe: recipe_object})
+    .then(() => {
+      this.props.updateFavorites(true);
+    })
+    .catch(err => {
+      console.log(err.response);
+    });
   }
 
   recipeList() {
@@ -131,7 +140,7 @@ class RecommendedRecipes extends React.Component {
                         </Grid>
                         <Grid item>
                         <IconButton aria-label='Add to favorites' onClick={this.handleFavoriteChange(recipe)}>
-                          {!this.state.user.favorites.includes(recipe.spoonacularId) ? (
+                          {this.state.user.favorites.includes(recipe.spoonacularId) ? (
                             <Favorite color='secondary' />
                           ) : (
                             <FavoriteBorder />
