@@ -66,6 +66,61 @@ const corsOptions ={
 
 app.use(cors(corsOptions)) // Use this after the variable declaration
 
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+const aiplatform = require('@google-cloud/aiplatform');
+const endpointId = "4877442376907358208";
+const project = 'cs-329s-final-project';
+const location = 'us-central1';
+const {instance, params, prediction} =
+  aiplatform.protos.google.cloud.aiplatform.v1.schema.predict;
+
+const {PredictionServiceClient} = aiplatform.v1;
+const clientOptions = {
+  apiEndpoint: 'us-central1-aiplatform.googleapis.com',
+};
+
+const predictionServiceClient = new PredictionServiceClient(clientOptions);
+
+async function predictObjects(filename) {
+  const endpoint = `projects/${project}/locations/${location}/endpoints/${endpointId}`;
+
+  const parametersObj = new params.ImageClassificationPredictionParams({
+    confidenceThreshold: 0.5,
+    maxPredictions: 5,
+  });
+  const parameters = parametersObj.toValue();
+
+  const image = fs.readFileSync(filename, 'base64');
+  const instanceObj = new instance.ImageClassificationPredictionInstance({
+    content: image,
+  });
+  const instanceValue = instanceObj.toValue();
+
+  const instances = [instanceValue];
+  const request = {
+    endpoint,
+    instances,
+    parameters,
+  };
+
+  // Predict request
+  const [response] = await predictionServiceClient.predict(request);
+  const predictions = response.predictions;
+
+  var out = [];
+  for (const predictionValue of predictions) {
+    const predictionResultObj =
+      prediction.ClassificationPredictionResult.fromValue(predictionValue);
+    for (const [i, label] of predictionResultObj.displayNames.entries()) {
+        out.push(label)
+    }
+  }
+  return out;
+}
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+
 // XXX - Your submission should work without this line. Comment out or delete this line for tests and before submission!
 // var cs142models = require('./modelData/photoApp.js').cs142models;
 
@@ -386,7 +441,24 @@ app.get('/photosOfUser/:id', function (request, response) {
                 response.status(400).send('Not found');
                 return;
             }
-            response.status(200).send(requested_photos);
+            // ML Ingredient Detection
+            requested_photos.sort(function(a, b) {
+                return b.date - a.date;
+            });
+            const fname = requested_photos[requested_photos.length - 1].file_name;
+            predictObjects(`./images/${fname}`).then(labels => {
+                // let labels_obj = {obj_labels : labels}
+                const resp = {
+                    photos: requested_photos,
+                    objects: labels,
+                }
+                response.status(200).send(resp);
+                console.log(`inside then labels = ${labels}`);
+            }).catch((e) => {
+                console.log(`inference failed ${e}`);
+                return;
+            })
+            // response.status(200).send(requested_photos);
         });
     });
 });
