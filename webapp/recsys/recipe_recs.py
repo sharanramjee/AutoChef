@@ -70,6 +70,20 @@ class RecipeRecommender:
 
         return sorted_recipes[:num_recipes]
 
+    def get_recipe_insts(self, spoon_ids, stepBreakdown):
+        recipe_insts = []
+        for id in spoon_ids:
+            params = {'apiKey': self.api_key, 'stepBreakdown': stepBreakdown}
+            response = requests.get(
+                url="https://api.spoonacular.com/recipes/" + str(id) + "/analyzedInstructions",
+                params=params
+            )
+            response_json = response.json()
+            recipe_insts.append({'spoon_id': id, 'instructions': response_json})
+        return recipe_insts
+
+
+
 def main():
     jongha_key = '8ed35011298e4cd5b31f57c78d4b9055'
     recommender = RecipeRecommender(api_key=jongha_key)
@@ -78,7 +92,7 @@ def main():
     use_pantry = False
 
     recipe_recs = recommender.get_recipes_by_ingredients(ingredients, use_pantry, num_recipes=num_recipes)
-    print(recipe_recs)
+    recipe_insts = recommender.get_recipe_insts([324694], False)
 
 if __name__ == "__main__":
     main()
