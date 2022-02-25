@@ -32,7 +32,6 @@ class RecipeRecommender:
             'offset': num_calls * num_results_per_call
         }
         params.update(base_api_args)
-        print(params)
         response = requests.get(url="https://api.spoonacular.com/recipes/complexSearch", params=params)
         response_json = response.json()
         
@@ -112,6 +111,7 @@ class RecipeRecommender:
 
 def main():
     jongha_key = '8ed35011298e4cd5b31f57c78d4b9055'
+    api_key = '51a955828emsh3295292ccbfe406p11aa4cjsn352261ae1b36'
     recommender = RecipeRecommender(api_key=jongha_key)
     ingredients = ['tomato', 'cheese']
     num_recipes = 10
