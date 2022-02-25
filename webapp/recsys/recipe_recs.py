@@ -5,18 +5,40 @@ class RecipeRecommender:
         self.api_key = api_key
 
     def get_recipes_call(self, ingredients, use_pantry, num_calls, num_results_per_call):
-        params = {
-            'apiKey': self.api_key,
-            'includeIngredients': ",".join(ingredients), 'ignorePantry': not use_pantry,
-            'number': num_results_per_call,
-            'type': 'main course', 'fillIngredients': True, 'addRecipeInformation': True,
-            'sort': 'min-missing-ingredients', 'sortDirection': 'asc',
-            'offset': num_calls * num_results_per_call
-        }
-        response = requests.get(url="https://api.spoonacular.com/recipes/complexSearch", params=params)
-        response_json = response.json()
-        
-        return response_json
+        # params = {
+        #     # 'apiKey': self.api_key,
+        #     'includeIngredients': ",".join(ingredients), 'ignorePantry': not use_pantry,
+        #     'number': num_results_per_call,
+        #     'type': 'main course', 'fillIngredients': True, 'addRecipeInformation': True,
+        #     'sort': 'min-missing-ingredients', 'sortDirection': 'asc',
+        #     'offset': num_calls * num_results_per_call
+        # }
+        # headers = {
+        #     'content-type': "application/json",
+        #     'x-rapidapi-host': "spoonacular-recipe-food-nutrition-v1.p.rapidapi.com",
+        #     'x-rapidapi-key': "ec3935765cmshdca8032a6b8048bp1e54eejsnaebcd0e0bd2d"
+        # }
+        # response = requests.get(url="https://api.spoonacular.com/recipes/complexSearch", headers=headers, params=params)
+        # response_json = response.json()
+        # print(response_json)
+
+        # return response_json
+
+        # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        # Sharan's Code
+        url = "https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/recipes/findByIngredients"
+
+        querystring = {"ingredients":"apples,flour,sugar","number":"5","ignorePantry":"true","ranking":"1"}
+
+        headers = {
+            'x-rapidapi-host': "spoonacular-recipe-food-nutrition-v1.p.rapidapi.com",
+            'x-rapidapi-key': "ec3935765cmshdca8032a6b8048bp1e54eejsnaebcd0e0bd2d"
+            }
+
+        response = requests.request("GET", url, headers=headers, params=querystring)
+
+        print(response.text)
+        # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
     def get_relevant_info(self, recipe):
@@ -85,13 +107,15 @@ class RecipeRecommender:
 
 def main():
     jongha_key = '8ed35011298e4cd5b31f57c78d4b9055'
-    recommender = RecipeRecommender(api_key=jongha_key)
+    api_key = '51a955828emsh3295292ccbfe406p11aa4cjsn352261ae1b36'
+    api_key = 'ec3935765cmshdca8032a6b8048bp1e54eejsnaebcd0e0bd2d'
+    recommender = RecipeRecommender(api_key=api_key)
     ingredients = ['tomato', 'cheese']
     num_recipes = 5
     use_pantry = False
 
-    # recipe_recs = recommender.get_recipes_by_ingredients(ingredients, use_pantry, num_recipes=num_recipes)
-    recipe_insts = recommender.get_recipe_insts([324694], True)
+    recipe_recs = recommender.get_recipes_by_ingredients(ingredients, use_pantry, num_recipes=num_recipes)
+    # recipe_insts = recommender.get_recipe_insts([324694], True)
     print(recipe_insts)
 
 if __name__ == "__main__":
