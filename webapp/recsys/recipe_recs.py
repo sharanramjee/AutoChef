@@ -2,7 +2,8 @@ import requests
 import json
 class RecipeRecommender:
     def __init__(self):
-
+        pass
+    
     def get_recipes_call(self, ingredients, use_pantry, num_calls, num_results_per_call):
         # params = {
         #     # 'apiKey': self.api_key,
