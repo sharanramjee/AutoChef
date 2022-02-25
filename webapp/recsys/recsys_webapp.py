@@ -24,7 +24,7 @@ def recsys():
         else:
             include_pantry = False
         ingredient_list = request.args.get('ingredients').split(', ')
-        recipe_recs = recommender.get_recipes_by_ingredients(ingredient_list, include_pantry, num_recipes=20)
+        recipe_recs = recommender.get_recipes_by_ingredients(20, ingredient_list, include_pantry)
         return jsonify(recipe_recs)  # serialize and use JSON headers
 
 

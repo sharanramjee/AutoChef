@@ -1,18 +1,38 @@
 import requests
-
+import json
 class RecipeRecommender:
     def __init__(self, api_key):
         self.api_key = api_key
 
-    def get_recipes_call(self, ingredients, use_pantry, num_calls, num_results_per_call):
+    def get_recipes_call(
+        self, ingredients, use_pantry, cuisine, diet, intolerance, dish_type, 
+        num_calls, num_results_per_call
+    ):
+        base_api_args = {
+            'includeIngredients': ",".join(ingredients), 'ignorePantry': not use_pantry,
+            'cuisine': ','.join(cuisine), 'diet': diet, 
+            'intolerances': ",".join(intolerance),
+            'type': dish_type
+        }
+        if diet == 'any':
+            base_api_args.pop('diet')
+        if dish_type == 'any':
+            base_api_args.pop('type')
+        if not cuisine:
+            base_api_args.pop('cuisine')
+        if not intolerance:
+            base_api_args.pop('intolerances')
+
         params = {
             'apiKey': self.api_key,
-            'includeIngredients': ",".join(ingredients), 'ignorePantry': not use_pantry,
-            'number': num_results_per_call,
-            'type': 'main course', 'fillIngredients': True, 'addRecipeInformation': True,
+            'fillIngredients': True, 'addRecipeInformation': True,
             'sort': 'min-missing-ingredients', 'sortDirection': 'asc',
+            'instructionsRequired': True,
+            'number': num_results_per_call,
             'offset': num_calls * num_results_per_call
         }
+        params.update(base_api_args)
+        print(params)
         response = requests.get(url="https://api.spoonacular.com/recipes/complexSearch", params=params)
         response_json = response.json()
         
@@ -41,16 +61,23 @@ class RecipeRecommender:
         return relevant_info
 
 
-    def get_recipes_by_ingredients(self, ingredients, use_pantry, num_recipes):
+    def get_recipes_by_ingredients(
+        self, num_recipes, ingredients, use_pantry=False,  
+        cuisine=[], diet='any', intolerance=[], dish_type='any' 
+    ):
         # Manually only filtering top recipes through a loop
         relevant_recipes = []
         num_calls = 0
         num_results_per_call = 20
 
+
         # num_calls < 3 to avoid too much calls to spoonacular
-        # while num_calls < 3 and len(relevant_recipes) < num_recipes:
-        while num_calls < 3:
-            response_json = self.get_recipes_call(ingredients, use_pantry, num_calls, num_results_per_call)
+        while num_calls < 3 and len(relevant_recipes) < num_recipes:
+        # while num_calls < 3:
+            response_json = self.get_recipes_call(
+                ingredients, use_pantry, cuisine, diet, intolerance, dish_type,
+                num_calls, num_results_per_call
+            )
 
             # Only add result if spoonacularscore >= 75:
             # TEMP: Can be changed
@@ -63,7 +90,7 @@ class RecipeRecommender:
             
             # To offset results from the same call
             num_calls += 1
-
+            print("Number of relevant recipes total:", len(relevant_recipes))
         # Sort by missedIngredientCount, then spoonacularScore
         sorted_recipes = sorted(relevant_recipes, key=lambda d: (d['missedIngredientCount'], -d['usedIngredientCount'], -d['spoonacularScore'], -d['aggregateLikes'])) 
 
@@ -87,12 +114,22 @@ def main():
     jongha_key = '8ed35011298e4cd5b31f57c78d4b9055'
     recommender = RecipeRecommender(api_key=jongha_key)
     ingredients = ['tomato', 'cheese']
-    num_recipes = 5
+    num_recipes = 10
     use_pantry = False
+    # cuisine = ["French", "German"]
+    cuisine=[]; diet='any'; dish_type='any'
+    # diet = 'vegetarian'
+    # dish_type = 'appetizer'
+    intolerance = ['Seafood']
 
-    # recipe_recs = recommender.get_recipes_by_ingredients(ingredients, use_pantry, num_recipes=num_recipes)
-    recipe_insts = recommender.get_recipe_insts([324694], True)
-    print(recipe_insts)
-
+    recipe_recs = recommender.get_recipes_by_ingredients(
+        num_recipes, ingredients, use_pantry, cuisine, diet, intolerance, dish_type)
+    with open('webapp/recsys/sample_recipe_output.json', 'w') as f:
+        json.dump(recipe_recs, f, indent=4)
+    
+    all_ids = [rec['spoonacularId'] for rec in recipe_recs]
+    recipe_insts = recommender.get_recipe_insts(all_ids, False)
+    with open('webapp/recsys/sample_recipe_insts_output.json', 'w') as f:
+        json.dump(recipe_insts, f, indent=4)
 if __name__ == "__main__":
     main()
