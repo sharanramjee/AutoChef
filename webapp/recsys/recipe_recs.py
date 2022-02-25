@@ -1,8 +1,7 @@
 import requests
-
+import json
 class RecipeRecommender:
-    def __init__(self, api_key):
-        self.api_key = api_key
+    def __init__(self):
 
     def get_recipes_call(self, ingredients, use_pantry, num_calls, num_results_per_call):
         # params = {
@@ -41,6 +40,7 @@ class RecipeRecommender:
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
+
     def get_relevant_info(self, recipe):
         relevant_params = [
             'missedIngredientCount', 'usedIngredientCount', 'missedIngredients', 
@@ -63,16 +63,23 @@ class RecipeRecommender:
         return relevant_info
 
 
-    def get_recipes_by_ingredients(self, ingredients, use_pantry, num_recipes):
+    def get_recipes_by_ingredients(
+        self, num_recipes, ingredients, use_pantry=False,  
+        cuisine=[], diet='any', intolerance=[], dish_type='any' 
+    ):
         # Manually only filtering top recipes through a loop
         relevant_recipes = []
         num_calls = 0
         num_results_per_call = 20
 
+
         # num_calls < 3 to avoid too much calls to spoonacular
-        # while num_calls < 3 and len(relevant_recipes) < num_recipes:
-        while num_calls < 3:
-            response_json = self.get_recipes_call(ingredients, use_pantry, num_calls, num_results_per_call)
+        while num_calls < 3 and len(relevant_recipes) < num_recipes:
+        # while num_calls < 3:
+            response_json = self.get_recipes_call(
+                ingredients, use_pantry, cuisine, diet, intolerance, dish_type,
+                num_calls, num_results_per_call
+            )
 
             # Only add result if spoonacularscore >= 75:
             # TEMP: Can be changed
@@ -85,7 +92,7 @@ class RecipeRecommender:
             
             # To offset results from the same call
             num_calls += 1
-
+            print("Number of relevant recipes total:", len(relevant_recipes))
         # Sort by missedIngredientCount, then spoonacularScore
         sorted_recipes = sorted(relevant_recipes, key=lambda d: (d['missedIngredientCount'], -d['usedIngredientCount'], -d['spoonacularScore'], -d['aggregateLikes'])) 
 
@@ -107,16 +114,17 @@ class RecipeRecommender:
 
 def main():
     jongha_key = '8ed35011298e4cd5b31f57c78d4b9055'
-    api_key = '51a955828emsh3295292ccbfe406p11aa4cjsn352261ae1b36'
     api_key = 'ec3935765cmshdca8032a6b8048bp1e54eejsnaebcd0e0bd2d'
-    recommender = RecipeRecommender(api_key=api_key)
+    recommender = RecipeRecommender()
+
     ingredients = ['tomato', 'cheese']
-    num_recipes = 5
+    num_recipes = 10
     use_pantry = False
 
     recipe_recs = recommender.get_recipes_by_ingredients(ingredients, use_pantry, num_recipes=num_recipes)
     # recipe_insts = recommender.get_recipe_insts([324694], True)
-    print(recipe_insts)
+    # print(recipe_insts)
+
 
 if __name__ == "__main__":
     main()
