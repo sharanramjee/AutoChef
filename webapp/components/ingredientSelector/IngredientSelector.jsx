@@ -15,7 +15,7 @@ class IngredientSelector extends React.Component {
     super(props);
     this.state = {
       photo: undefined,
-      detected_ingredients: {},
+      detected_ingredients: undefined,
       added_ingredients: {},
       added_ingredient_text: '',
       include_pantry: true,
@@ -48,23 +48,22 @@ class IngredientSelector extends React.Component {
     axios.get('/ingredientDetector/' + this.props.curr_user_id)
     .then(response => {
       let latest_photo = response.data.photo;
-      let labels_list = response.data.ingredients;
-      let labels_dict = {};
-      for (let label of labels_list) {
-        labels_dict[label] = true;
-      };
+      // let labels_list = response.data.ingredients;
+      // let labels_dict = {};
+      // for (let label of labels_list) {
+      //   labels_dict[label] = true;
+      // };
       this.setState({
         photo: latest_photo,
-        detected_ingredients: labels_dict,
+        // detected_ingredients: labels_dict,
       });
     })
     .catch(err => {
       console.log(err.response);
     });
-    // // Hard-code some detected ingredients
-    // let detected_example = {'apple': true, 'flour': true, 'sugar': true};
-    // this.setState({detected_ingredients: detected_example});
-
+    // Hard-code some detected ingredients
+    let detected_example = {'apple': true, 'flour': true, 'sugar': true};
+    this.setState({detected_ingredients: detected_example});
   }
 
   // componentDidUpdate() {

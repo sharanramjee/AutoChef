@@ -447,18 +447,18 @@ app.get('/ingredientDetector/:id', function (request, response) {
                 return b.date - a.date;
             });
             let latest_photo = requested_photos[requested_photos.length - 1]
-            const latest_photo_filename = latest_photo.file_name;
-            predictObjects(`./images/${latest_photo_filename}`).then(labels => {
-                const photo_labels = {
-                    photo: latest_photo,
-                    ingredients: labels,
-                }
-                response.status(200).send(photo_labels);
-            }).catch((e) => {
-                console.log(`Ingredient Detection Inference Failed: ${e}`);
-                return;
-            })
-            // response.status(200).send({photo: latest_photo, ingredients: undefined});
+            // const latest_photo_filename = latest_photo.file_name;
+            // predictObjects(`./images/${latest_photo_filename}`).then(labels => {
+            //     const photo_labels = {
+            //         photo: latest_photo,
+            //         ingredients: labels,
+            //     }
+            //     response.status(200).send(photo_labels);
+            // }).catch((e) => {
+            //     console.log(`Ingredient Detection Inference Failed: ${e}`);
+            //     return;
+            // })
+            response.status(200).send({photo: latest_photo, ingredients: undefined});
         });
     });
 });

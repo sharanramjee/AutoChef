@@ -7,12 +7,13 @@ import './styles/main.css';
 import axios from 'axios';
 
 // import necessary components
+import LoginRegister from './components/LoginRegister/LoginRegister';
 import TopBar from './components/topBar/TopBar';
 import UserDetail from './components/userDetail/UserDetail';
 import FavoriteList from './components/favoriteList/FavoriteList';
 import IngredientSelector from './components/ingredientSelector/ingredientSelector';
 import RecommendedRecipes from './components/recommendedRecipes/RecommendedRecipes';
-import LoginRegister from './components/LoginRegister/LoginRegister';
+import RecipeInstructions from './components/recipeInstructions/RecipeInstructions';
 
 class AutoChef extends React.Component {
   constructor(props) {
@@ -135,6 +136,13 @@ class AutoChef extends React.Component {
               ) : (
                 <Redirect path='/photos/:userId' to='/login-register' />
               )} */}
+              {this.state.current_user ? (
+                <Route path='/instructions/:recipe_id'
+                  render={props => <RecipeInstructions {...props} /> }
+                />
+              ) : (
+                <Redirect path='/instructions/:recipe_id' to='/login-register' />
+              )}
               {this.state.current_user ? (
                 <Route path='/ingredient-selector'
                   render={props => <IngredientSelector changeQuery={this.changeQuery} curr_user_id={this.state.current_user._id} {...props} /> }

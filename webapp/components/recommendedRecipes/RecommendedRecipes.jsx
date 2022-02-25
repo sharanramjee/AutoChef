@@ -1,6 +1,7 @@
 import React from 'react';
 import {Card, CardMedia, Grid, IconButton, Typography} from '@material-ui/core';
 import {Favorite, FavoriteBorder} from '@material-ui/icons';
+import {Link} from 'react-router-dom';
 import './RecommendedRecipes.css';
 import axios from 'axios';
 
@@ -133,7 +134,7 @@ class RecommendedRecipes extends React.Component {
                   <Grid container direction='column' alignItems='flex-start'>
                     <Grid item>
                       <Grid container direction='row' justifyContent='space-between'>
-                        <Grid item>
+                        <Grid item button component={Link} to={'/instructions/' + recipe.spoonacularId}>
                           <Typography variant='h5'>
                             {recipe.title}
                           </Typography>

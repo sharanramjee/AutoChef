@@ -15,8 +15,7 @@ class RecipeRecommender:
         }
         response = requests.get(url="https://api.spoonacular.com/recipes/complexSearch", params=params)
         response_json = response.json()
-        # print(response.request.url)        
-
+        
         return response_json
 
 
@@ -91,8 +90,9 @@ def main():
     num_recipes = 5
     use_pantry = False
 
-    recipe_recs = recommender.get_recipes_by_ingredients(ingredients, use_pantry, num_recipes=num_recipes)
-    recipe_insts = recommender.get_recipe_insts([324694], False)
+    # recipe_recs = recommender.get_recipes_by_ingredients(ingredients, use_pantry, num_recipes=num_recipes)
+    recipe_insts = recommender.get_recipe_insts([324694], True)
+    print(recipe_insts)
 
 if __name__ == "__main__":
     main()

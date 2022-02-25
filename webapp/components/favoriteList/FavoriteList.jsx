@@ -27,13 +27,6 @@ class FavoriteList extends React.Component {
     .catch(err => {
       console.log(err.response);
     })
-    // axios.get('https://api.spoonacular.com/recipes/findByIngredients?apiKey=8ed35011298e4cd5b31f57c78d4b9055&ingredients=apples,+flour,+sugar&number=2')
-    // .then(response => {
-    //   console.log('Spoonacular response:', response.data);
-    // })
-    // .catch(err => {
-    //   console.log('Spoonacular error:', err);
-    // });
   }
 
   componentDidUpdate(prevProps) {
@@ -59,7 +52,7 @@ class FavoriteList extends React.Component {
       for(let i = 0; i < this.state.favorites.length; i++){
         favoriteList.push(
           <div key = {i}>
-            <ListItem button component={Link} to={'/favorites/' + this.state.favorites[i].id}>
+            <ListItem button component={Link} to={'/instructions/' + this.state.favorites[i].spoonacularId}>
               <ListItemText className='favorite-recipe' primary={this.state.favorites[i].title}/>
             </ListItem>
             <Divider />

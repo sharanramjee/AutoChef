@@ -5,10 +5,11 @@ app = Flask(__name__)
 cors = CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
 
+api_key = '51a955828emsh3295292ccbfe406p11aa4cjsn352261ae1b36'
 
 @app.route('/recsys', methods=['GET', 'POST'])
 @cross_origin()
-def recsys_webapp():
+def recsys():
     # POST request
     if request.method == 'POST':
         print('Incoming..')
@@ -16,8 +17,7 @@ def recsys_webapp():
         return 'OK', 200
     # GET request
     else:
-        jongha_key = '8ed35011298e4cd5b31f57c78d4b9055'
-        recommender = RecipeRecommender(api_key=jongha_key)
+        recommender = RecipeRecommender(api_key=api_key)
         include_pantry = request.args.get('includePantry')
         if include_pantry == 'true':
             include_pantry = True
@@ -26,6 +26,29 @@ def recsys_webapp():
         ingredient_list = request.args.get('ingredients').split(', ')
         recipe_recs = recommender.get_recipes_by_ingredients(ingredient_list, include_pantry, num_recipes=20)
         return jsonify(recipe_recs)  # serialize and use JSON headers
+
+
+@app.route('/insts', methods=['GET', 'POST'])
+@cross_origin()
+def insts():
+    # POST request
+    if request.method == 'POST':
+        print('Incoming..')
+        print(request.get_json())
+        return 'OK', 200
+    # GET request
+    else:
+        recommender = RecipeRecommender(api_key=api_key)
+        breakdown = request.args.get('breakdown')
+        if breakdown == 'true':
+            breakdown = True
+        else:
+            breakdown = False
+        recipe_id = request.args.get('recipe_id')
+        insts = recommender.get_recipe_insts([recipe_id], breakdown)
+        print('BOI:', insts)
+        return jsonify(insts)  # serialize and use JSON headers
+
 
 if __name__ == '__main__':
    app.run()
