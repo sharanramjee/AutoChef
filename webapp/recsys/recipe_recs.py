@@ -2,43 +2,49 @@ import requests
 import json
 class RecipeRecommender:
     def __init__(self):
-        pass
-    
-    def get_recipes_call(self, ingredients, use_pantry, num_calls, num_results_per_call):
-        # params = {
-        #     # 'apiKey': self.api_key,
-        #     'includeIngredients': ",".join(ingredients), 'ignorePantry': not use_pantry,
-        #     'number': num_results_per_call,
-        #     'type': 'main course', 'fillIngredients': True, 'addRecipeInformation': True,
-        #     'sort': 'min-missing-ingredients', 'sortDirection': 'asc',
-        #     'offset': num_calls * num_results_per_call
-        # }
-        # headers = {
-        #     'content-type': "application/json",
-        #     'x-rapidapi-host': "spoonacular-recipe-food-nutrition-v1.p.rapidapi.com",
-        #     'x-rapidapi-key': "ec3935765cmshdca8032a6b8048bp1e54eejsnaebcd0e0bd2d"
-        # }
-        # response = requests.get(url="https://api.spoonacular.com/recipes/complexSearch", headers=headers, params=params)
-        # response_json = response.json()
-        # print(response_json)
-
-        # return response_json
-
-        # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        # Sharan's Code
-        url = "https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/recipes/findByIngredients"
-
-        querystring = {"ingredients":"apples,flour,sugar","number":"5","ignorePantry":"true","ranking":"1"}
-
-        headers = {
+        self.headers = {
             'x-rapidapi-host': "spoonacular-recipe-food-nutrition-v1.p.rapidapi.com",
             'x-rapidapi-key': "ec3935765cmshdca8032a6b8048bp1e54eejsnaebcd0e0bd2d"
-            }
+            
+        }
 
-        response = requests.request("GET", url, headers=headers, params=querystring)
+    def get_recipes_call(
+        self, ingredients, use_pantry, cuisine, diet, intolerance, dish_type, 
+        num_calls, num_results_per_call
+    ):
+        base_api_args = {
+            'includeIngredients': ",".join(ingredients), 'ignorePantry': not use_pantry,
+            'cuisine': ','.join(cuisine), 'diet': diet, 
+            'intolerances': ",".join(intolerance),
+            'type': dish_type
+        }
+        if diet == 'any':
+            base_api_args.pop('diet')
+        if dish_type == 'any':
+            base_api_args.pop('type')
+        if not cuisine:
+            base_api_args.pop('cuisine')
+        if not intolerance:
+            base_api_args.pop('intolerances')
 
-        print(response.text)
-        # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        params = {
+            # 'apiKey': self.api_key,
+            'number': num_results_per_call,
+            'fillIngredients': True, 'addRecipeInformation': True,
+            'ranking': 0, 
+            'instructionsRequired': True,
+            'number': num_results_per_call,
+            'offset': num_calls * num_results_per_call
+        }
+        params.update(base_api_args)
+        
+        response = requests.get(
+            url="https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/recipes/searchComplex", 
+            headers=self.headers, params=params
+        )
+        response_json = response.json()
+
+        return response_json
 
 
 
@@ -74,9 +80,7 @@ class RecipeRecommender:
         num_results_per_call = 20
 
 
-        # num_calls < 3 to avoid too much calls to spoonacular
-        while num_calls < 3 and len(relevant_recipes) < num_recipes:
-        # while num_calls < 3:
+        while len(relevant_recipes) < num_recipes:
             response_json = self.get_recipes_call(
                 ingredients, use_pantry, cuisine, diet, intolerance, dish_type,
                 num_calls, num_results_per_call
@@ -94,7 +98,8 @@ class RecipeRecommender:
             # To offset results from the same call
             num_calls += 1
             print("Number of relevant recipes total:", len(relevant_recipes))
-        # Sort by missedIngredientCount, then spoonacularScore
+
+        # Sort by missedIngredientCount, usedingredientcount, then spoonacularScore
         sorted_recipes = sorted(relevant_recipes, key=lambda d: (d['missedIngredientCount'], -d['usedIngredientCount'], -d['spoonacularScore'], -d['aggregateLikes'])) 
 
         return sorted_recipes[:num_recipes]
@@ -102,10 +107,10 @@ class RecipeRecommender:
     def get_recipe_insts(self, spoon_ids, stepBreakdown):
         recipe_insts = []
         for id in spoon_ids:
-            params = {'apiKey': self.api_key, 'stepBreakdown': stepBreakdown}
+            params = {'stepBreakdown': stepBreakdown}
             response = requests.get(
-                url="https://api.spoonacular.com/recipes/" + str(id) + "/analyzedInstructions",
-                params=params
+                url="https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/recipes/" + str(id) + "/analyzedInstructions",
+                headers=self.headers, params=params
             )
             response_json = response.json()
             recipe_insts.append({'spoon_id': id, 'instructions': response_json})
@@ -121,10 +126,20 @@ def main():
     ingredients = ['tomato', 'cheese']
     num_recipes = 10
     use_pantry = False
+    cuisine=[]; diet='any'; dish_type='any'
+    # diet = 'vegetarian'
+    # dish_type = 'appetizer'
+    intolerance = ['Seafood']
 
-    recipe_recs = recommender.get_recipes_by_ingredients(ingredients, use_pantry, num_recipes=num_recipes)
-    # recipe_insts = recommender.get_recipe_insts([324694], True)
-    # print(recipe_insts)
+    recipe_recs = recommender.get_recipes_by_ingredients(
+        num_recipes, ingredients, use_pantry, cuisine, diet, intolerance, dish_type)
+    with open('webapp/recsys/sample_recipe_output.json', 'w') as f:
+        json.dump(recipe_recs, f, indent=4)
+
+    all_ids = [rec['spoonacularId'] for rec in recipe_recs]
+    recipe_insts = recommender.get_recipe_insts(all_ids, False)
+    with open('webapp/recsys/sample_recipe_insts_output.json', 'w') as f:
+        json.dump(recipe_insts, f, indent=4)
 
 
 if __name__ == "__main__":

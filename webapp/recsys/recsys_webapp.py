@@ -5,7 +5,7 @@ app = Flask(__name__)
 cors = CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
 
-api_key = '51a955828emsh3295292ccbfe406p11aa4cjsn352261ae1b36'
+# api_key = '51a955828emsh3295292ccbfe406p11aa4cjsn352261ae1b36'
 
 @app.route('/recsys', methods=['GET', 'POST'])
 @cross_origin()
@@ -17,7 +17,7 @@ def recsys():
         return 'OK', 200
     # GET request
     else:
-        recommender = RecipeRecommender(api_key=api_key)
+        recommender = RecipeRecommender()
         include_pantry = request.args.get('includePantry')
         if include_pantry == 'true':
             include_pantry = True
@@ -38,7 +38,7 @@ def insts():
         return 'OK', 200
     # GET request
     else:
-        recommender = RecipeRecommender(api_key=api_key)
+        recommender = RecipeRecommender()
         breakdown = request.args.get('breakdown')
         if breakdown == 'true':
             breakdown = True
