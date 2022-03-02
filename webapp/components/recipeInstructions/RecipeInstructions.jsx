@@ -27,27 +27,12 @@ class RecipeInstructions extends React.Component {
     let query_string = this.queryStringify(true, this.state.recipe_id);
     axios.get('http://127.0.0.1:5000/insts?' + query_string)
     .then(response => {
-      console.log('NAENAE:', response.data[0].instructions[0].steps)
       this.setState({instructions: response.data[0].instructions[0].steps});
     })
     .catch(err => {
       console.log(err.response);
     });
   }
-
-//   componentDidUpdate() {
-//     if (this.props.match.params.userId !== this.state.user._id) {
-//       axios.get('user/' + this.props.match.params.userId)
-//       .then(response => {
-//         this.setState({user: response.data});
-//         this.props.changeView(response.data.first_name + ' ' + response.data.last_name + '\'s profile');
-//       })
-//       .catch(err => {
-//         console.log(err.response);
-//       })
-//     this.render();
-//     }
-//   }
 
   instructionsList() {
     let instructions_list = [];
@@ -65,7 +50,6 @@ class RecipeInstructions extends React.Component {
   }
 
   render() {
-    console.log(this.state.instructions);
     if (this.state.instructions) {
       return (
         <div>

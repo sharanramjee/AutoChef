@@ -1,3 +1,24 @@
+.recipe-title {
+    color: #4caf50;
+    text-decoration: none;
+}
+
+#filter-cuisines-checkbox {
+    min-width: 200px !important;
+}
+
+#filter-diets-checkbox {
+    min-width: 200px !important;
+}
+
+#filter-intolerances-checkbox {
+    min-width: 200px !important;
+}
+
+#filter-meal-types-checkbox {
+    min-width: 200px !important;
+}
+
 #added-ingredient-textbox {
     width: 90% !important;
     border-right: 10px;

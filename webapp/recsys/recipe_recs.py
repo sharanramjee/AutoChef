@@ -78,7 +78,7 @@ class RecipeRecommender:
         relevant_recipes = []
         num_calls = 0
         num_results_per_call = 20
-
+        prev_relevant_recipes = list()
 
         while len(relevant_recipes) < num_recipes:
             response_json = self.get_recipes_call(
@@ -98,6 +98,11 @@ class RecipeRecommender:
             # To offset results from the same call
             num_calls += 1
             print("Number of relevant recipes total:", len(relevant_recipes))
+            
+            if len(prev_relevant_recipes) == len(relevant_recipes):
+                break
+            prev_relevant_recipes = relevant_recipes
+
 
         # Sort by missedIngredientCount, usedingredientcount, then spoonacularScore
         sorted_recipes = sorted(relevant_recipes, key=lambda d: (d['missedIngredientCount'], -d['usedIngredientCount'], -d['spoonacularScore'], -d['aggregateLikes'])) 
@@ -119,8 +124,9 @@ class RecipeRecommender:
 
 
 def main():
-    jongha_key = '8ed35011298e4cd5b31f57c78d4b9055'
-    api_key = 'ec3935765cmshdca8032a6b8048bp1e54eejsnaebcd0e0bd2d'
+    # jongha_key = '8ed35011298e4cd5b31f57c78d4b9055'
+    # api_key = 'ec3935765cmshdca8032a6b8048bp1e54eejsnaebcd0e0bd2d'
+    
     recommender = RecipeRecommender()
 
     ingredients = ['tomato', 'cheese']

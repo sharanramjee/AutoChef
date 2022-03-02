@@ -18,13 +18,36 @@ def recsys():
     # GET request
     else:
         recommender = RecipeRecommender()
+        # Include pantry
         include_pantry = request.args.get('includePantry')
         if include_pantry == 'true':
             include_pantry = True
         else:
             include_pantry = False
+        # Ingredient list
         ingredient_list = request.args.get('ingredients').split(', ')
-        recipe_recs = recommender.get_recipes_by_ingredients(20, ingredient_list, include_pantry)
+        # Cuisine list
+        cuisine_list = request.args.get('cuisines')
+        if len(cuisine_list) == 0:
+            cuisine_list = list()
+        else:
+            cuisine_list = cuisine_list.split(', ')
+        # Diet
+        diet = request.args.get('diet')
+        if len(diet) == 0:
+            diet = 'any'
+        # Intolerance list
+        intolerance_list = request.args.get('intolerances')
+        if len(intolerance_list) == 0:
+            intolerance_list = list()
+        else:
+            intolerance_list = intolerance_list.split(', ')
+        # Meal type
+        meal_type = request.args.get('meal_type')
+        if len(meal_type) == 0:
+            meal_type = 'any'
+        recipe_recs = recommender.get_recipes_by_ingredients(20, ingredient_list, include_pantry,
+            cuisine_list, diet, intolerance_list, meal_type)
         return jsonify(recipe_recs)  # serialize and use JSON headers
 
 
@@ -46,7 +69,6 @@ def insts():
             breakdown = False
         recipe_id = request.args.get('recipe_id')
         insts = recommender.get_recipe_insts([recipe_id], breakdown)
-        print('BOI:', insts)
         return jsonify(insts)  # serialize and use JSON headers
 
 

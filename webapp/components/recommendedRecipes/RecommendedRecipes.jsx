@@ -1,5 +1,6 @@
 import React from 'react';
-import {Card, CardMedia, Grid, IconButton, Typography} from '@material-ui/core';
+import {Button, Card, CardMedia, Checkbox, Divider, FormControl, Grid, IconButton,
+  InputLabel, ListItemText, MenuItem, OutlinedInput, Select, Typography} from '@material-ui/core';
 import {Favorite, FavoriteBorder} from '@material-ui/icons';
 import {Link} from 'react-router-dom';
 import './RecommendedRecipes.css';
@@ -13,15 +14,35 @@ class RecommendedRecipes extends React.Component {
     super(props);
     this.state = {
       user: undefined,
-      recipes: []
+      recipes: [],
+      cuisines: [],
+      diets: '',
+      intolerances: [],
+      meal_types: ''
     }
+    // Recommendations Queries
     this.queryStringify = this.queryStringify.bind(this);
+    // Recommendations Filter
+    this.handleCuisineChange = this.handleCuisineChange.bind(this);
+    this.handleDietChange = this.handleDietChange.bind(this);
+    this.handleIntoleranceChange = this.handleIntoleranceChange.bind(this);
+    this.handleFilterClick = this.handleFilterClick.bind(this);
+    this.filterOptions = this.filterOptions.bind(this);
+    // Recommendations List
+    this.handleFavoriteChange = this.handleFavoriteChange.bind(this);
     this.recipeList = this.recipeList.bind(this);
   }
 
-  queryStringify(ingredient_list, include_panty_status) {
+  queryStringify(include_panty_status, ingredient_list, cuisine_list, diet, intolerance_list, meal_type) {
     let ingredient_string = ingredient_list.join(',+');
-    let query_string = 'includePantry='.concat(include_panty_status.toString()).concat('&ingredients=').concat(ingredient_string);
+    let query_string = 'includePantry='.concat(include_panty_status.toString())
+    query_string = query_string.concat('&ingredients=').concat(ingredient_string);
+    let cuisine_string = cuisine_list.join(',+');
+    query_string = query_string.concat('&cuisines=').concat(cuisine_string);
+    query_string = query_string.concat('&diet=').concat(diet);
+    let intolerance_string = intolerance_list.join(',+');
+    query_string = query_string.concat('&intolerances=').concat(intolerance_string);
+    query_string = query_string.concat('&meal_type=').concat(meal_type);
     return query_string;
   }
 
@@ -35,7 +56,8 @@ class RecommendedRecipes extends React.Component {
       console.log(err.response);
     })
     // Get the recipes
-    let query_string = this.queryStringify(this.props.query_ingredients, this.props.query_include_pantry);
+    let query_string = this.queryStringify(this.props.query_include_pantry, this.props.query_ingredients,
+      this.state.cuisines, this.state.diets, this.state.intolerances, this.state.meal_types);
     axios.get('http://127.0.0.1:5000/recsys?' + query_string)
     .then(response => {
       this.setState({recipes: response.data});
@@ -97,6 +119,171 @@ class RecommendedRecipes extends React.Component {
     }
   }
 
+  handleCuisineChange = (event) => {
+    let {
+      target: {value},
+    } = event;
+    typeof value === 'string' ? value.split(',') : value;
+    this.setState({cuisines: value});
+  }
+
+  handleDietChange = (event) => {
+    let {
+      target: {value},
+    } = event;
+    typeof value === 'string' ? value.split(',') : value;
+    this.setState({diets: value});
+  }
+
+  handleIntoleranceChange = (event) => {
+    let {
+      target: {value},
+    } = event;
+    typeof value === 'string' ? value.split(',') : value;
+    this.setState({intolerances: value});
+  }
+
+  handleMealTypeChange = (event) => {
+    let {
+      target: {value},
+    } = event;
+    typeof value === 'string' ? value.split(',') : value;
+    this.setState({meal_types: value});
+  }
+
+  handleFilterClick() {
+    // Get the recipes
+    let query_string = this.queryStringify(this.props.query_include_pantry, this.props.query_ingredients,
+      this.state.cuisines, this.state.diets, this.state.intolerances, this.state.meal_types);
+    axios.get('http://127.0.0.1:5000/recsys?' + query_string)
+    .then(response => {
+      this.setState({recipes: response.data});
+    })
+    .catch(err => {
+      console.log(err.response);
+    });
+  }
+
+  filterOptions() {
+    // Dropdown Bar Properties
+    const ITEM_HEIGHT = 48;
+    const ITEM_PADDING_TOP = 8;
+    const MenuProps = {
+      PaperProps: {
+        style: {
+          maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+          width: 300,
+        },
+      },
+    };
+    // Dropdown Bar Options
+    let cuisine_options = ['African', 'American', 'British', 'Cajun', 'Caribbean', 'Chinese', 'Eastern European',
+    'European', 'French', 'German', 'Greek', 'Indian', 'Irish', 'Italian', 'Japanese', 'Jewish', 'Korean', 'Latin American',
+    'Mediterranean', 'Mexican', 'Middle Eastern', 'Nordic', 'Southern', 'Spanish', 'Thai', 'Vietnamese']
+    let diet_options = ['Gluten Free', 'Ketogenic', 'Vegetarian', 'Lacto-Vegetarian', 'Ovo-Vegetarian', 'Vegan', 'Pescetarian',
+    'Paleo', 'Primal', 'Low FODMAP', 'Whole30']
+    let intolerance_options = ['Dairy', 'Egg', 'Gluten', 'Grain', 'Peanut', 'Seafood', 'Sesame', 'Shellfish', 'Soy',
+    'Sulfite', 'Tree', 'Nut', 'Wheat']
+    let meal_type_options = ['main course', 'side dish', 'dessert', 'appetizer', 'salad', 'bread', 'breakfast', 'soup',
+    'beverage', 'sauce', 'marinade', 'fingerfood', 'snack', 'drink']
+    return (
+      <Grid container direction='column' alignItems='flex-start' justifyContent='space-between'>
+        {/* Cuisines */}
+        <Grid item>
+          <FormControl>
+            <InputLabel id='filter-cuisines'>Cuisines</InputLabel>
+            <Select
+              labelId='filter-cuisines-label'
+              id='filter-cuisines-checkbox'
+              multiple
+              value={this.state.cuisines}
+              onChange={this.handleCuisineChange}
+              input={<OutlinedInput label='Cuisines' />}
+              renderValue={(selected) => selected.join(', ')}
+              MenuProps={MenuProps}
+            >
+              {cuisine_options.map((cuisine) => (
+                <MenuItem key={cuisine} value={cuisine}>
+                  <Checkbox checked={this.state.cuisines.indexOf(cuisine) > -1} />
+                  <ListItemText primary={cuisine} />
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </Grid>
+        {/* Diets */}
+        <Grid item>
+          <FormControl>
+            <InputLabel id='filter-diets'>Diets</InputLabel>
+            <Select
+              labelId='filter-diets-label'
+              id='filter-diets-checkbox'
+              value={this.state.diets}
+              onChange={this.handleDietChange}
+              input={<OutlinedInput label='Diets' />}
+              MenuProps={MenuProps}
+            >
+              {diet_options.map((diet) => (
+                <MenuItem key={diet} value={diet}>
+                  <ListItemText primary={diet} />
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </Grid>
+        {/* Intolerances */}
+        <Grid item>
+          <FormControl>
+            <InputLabel id='filter-intolerances'>Intolerances</InputLabel>
+            <Select
+              labelId='filter-intolerances-label'
+              id='filter-intolerances-checkbox'
+              multiple
+              value={this.state.intolerances}
+              onChange={this.handleIntoleranceChange}
+              input={<OutlinedInput label='Intolerances' />}
+              renderValue={(selected) => selected.join(', ')}
+              MenuProps={MenuProps}
+            >
+              {intolerance_options.map((intolerance) => (
+                <MenuItem key={intolerance} value={intolerance}>
+                  <Checkbox checked={this.state.intolerances.indexOf(intolerance) > -1} />
+                  <ListItemText primary={intolerance} />
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </Grid>
+        {/* Meal Types */}
+        <Grid item>
+          <FormControl>
+            <InputLabel id='filter-meal-types'>Meal Types</InputLabel>
+            <Select
+              labelId='filter-meal-types-label'
+              id='filter-meal-types-checkbox'
+              value={this.state.meal_types}
+              onChange={this.handleMealTypeChange}
+              input={<OutlinedInput label='Meal Types' />}
+              MenuProps={MenuProps}
+            >
+              {meal_type_options.map((meal_type) => (
+                <MenuItem key={meal_type} value={meal_type}>
+                  <ListItemText primary={meal_type} />
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </Grid>
+        {/* Filter Button */}
+        <Grid item>
+          <Button variant='contained' color='primary' onClick={this.handleFilterClick} >
+            Filter
+          </Button>
+        </Grid>
+      </Grid>
+    )
+  }
+  
   handleFavoriteChange = (recipe_object) => (_) => {
     axios.post('/favoriteRecipe', {recipe: recipe_object})
     .then(() => {
@@ -108,33 +295,26 @@ class RecommendedRecipes extends React.Component {
   }
 
   recipeList() {
+    console.log(this.state.recipes);
     return(
       <Grid container direction='column' padding={8} justifyContent='space-between' alignItems='flex-start'>
         {this.state.recipes.map(recipe => {
         return (
-          <Grid item xs={2} key={recipe.title}>
+          <Grid item xs={2} key={recipe.spoonacularId}>
             <Card className='recipe-card'>
-              {/* <CardHeader className='recipe-header'
-                action={
-                  <IconButton onClick={event => this.handleDeleteFavorite(event)}>
-                    <Clear />
-                  </IconButton>
-                }
-              /> */}
               <Grid container spacing={2} direction='row' alignItems='flex-start'>
                 <Grid item xs={3}>
                   <CardMedia
                     component='img'
                     className='recipe-thumbnail'
                     image={recipe.image}
-                    onClick={this.handleOpenFavorite}
                   />
                 </Grid>
                 <Grid item xs={9}>
                   <Grid container direction='column' alignItems='flex-start'>
                     <Grid item>
                       <Grid container direction='row' justifyContent='space-between'>
-                        <Grid item button component={Link} to={'/instructions/' + recipe.spoonacularId}>
+                        <Grid className='recipe-title' item component={Link} to={'/instructions/' + recipe.spoonacularId}>
                           <Typography variant='h5'>
                             {recipe.title}
                           </Typography>
@@ -174,10 +354,21 @@ class RecommendedRecipes extends React.Component {
     if (this.state.user && this.state.recipes.length >= 1) {
       return (
         <div>
+          {/* Recipe Filter Header */}
+          <Typography id='recipe-filter-header' variant='h5'>
+            Filter Options
+            <br/>
+          </Typography>
+          {/* Recipe Filter */}
+          {this.filterOptions()}
+          <br/>
+          <Divider/>
+          {/* Recommendations Header */}
           <Typography id='rec-recipe-header' variant='h4'>
             Recommended Recipes
             <br/>
           </Typography>
+          {/* List of recommended recipes */}
           {this.recipeList()}
         </div>
       );
