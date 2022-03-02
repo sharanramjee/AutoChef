@@ -1,3 +1,4 @@
+import re
 import requests
 import json
 class RecipeRecommender:
@@ -43,6 +44,7 @@ class RecipeRecommender:
             headers=self.headers, params=params
         )
         response_json = response.json()
+        # print(response.request.url)
 
         return response_json
 
@@ -50,7 +52,7 @@ class RecipeRecommender:
 
     def get_relevant_info(self, recipe):
         relevant_params = [
-            'missedIngredientCount', 'usedIngredientCount', 'missedIngredients', 
+            'missedIngredients', 
             'usedIngredients', 'title', 'image', 'summary', 'id',
             'spoonacularScore', 'healthScore', 'aggregateLikes', 'veryPopular',
         ]
@@ -62,6 +64,10 @@ class RecipeRecommender:
         # Get missing and used ingredient names
         relevant_info['missedIngredient_names'] = [missed['name'] for missed in relevant_info['missedIngredients']]
         relevant_info['usedIngredient_names'] = [used['name'] for used in relevant_info['usedIngredients']]
+        
+        # Derive ingredient counts from arrays instead of the param returned itself
+        relevant_info['missedIngredientCount'] = len(relevant_info['missedIngredient_names'])
+        relevant_info['usedIngredientCount'] = len(relevant_info['usedIngredient_names'])
 
         # TEMP: Remove missedIngredients and usedIngredients for now to avoid clutter
         relevant_info.pop('missedIngredients', None)
@@ -90,7 +96,10 @@ class RecipeRecommender:
             # TEMP: Can be changed
             for recipe in response_json['results']: 
                 relevant_info = self.get_relevant_info(recipe)
-                relevant_recipes.append(relevant_info)               
+                
+                # After getting relevant info, check if actually using ingredient:
+                if relevant_info['usedIngredientCount'] > 0:
+                    relevant_recipes.append(relevant_info)               
                 # if recipe['spoonacularScore'] >= 75:
                 #     relevant_info = self.get_relevant_info(recipe)
                 #     relevant_recipes.append(relevant_info)
@@ -129,13 +138,13 @@ def main():
     
     recommender = RecipeRecommender()
 
-    ingredients = ['tomato', 'cheese']
-    num_recipes = 10
+    ingredients = ['apple', 'flour', 'sugar']
+    num_recipes = 20
     use_pantry = False
-    cuisine=[]; diet='any'; dish_type='any'
+    cuisine=['American']; diet='vegetarian'; dish_type='drink'
     # diet = 'vegetarian'
     # dish_type = 'appetizer'
-    intolerance = ['Seafood']
+    intolerance = ['Dairy']
 
     recipe_recs = recommender.get_recipes_by_ingredients(
         num_recipes, ingredients, use_pantry, cuisine, diet, intolerance, dish_type)
