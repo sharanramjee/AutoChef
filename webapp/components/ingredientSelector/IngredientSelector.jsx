@@ -62,7 +62,7 @@ class IngredientSelector extends React.Component {
       console.log(err.response);
     });
     // Hard-code some detected ingredients
-    let detected_example = {'apple': true, 'flour': true, 'sugar': true};
+    let detected_example = {'lettuce': true};
     this.setState({detected_ingredients: detected_example});
   }
 

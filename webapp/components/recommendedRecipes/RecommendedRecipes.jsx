@@ -295,7 +295,6 @@ class RecommendedRecipes extends React.Component {
   }
 
   recipeList() {
-    console.log(this.state.recipes);
     return(
       <Grid container direction='column' padding={8} justifyContent='space-between' alignItems='flex-start'>
         {this.state.recipes.map(recipe => {
@@ -374,7 +373,26 @@ class RecommendedRecipes extends React.Component {
       );
     }
     else {
-      return (<div/>); 
+      return (
+        <div>
+          {/* Recipe Filter Header */}
+          <Typography id='recipe-filter-header' variant='h5'>
+            Filter Options
+            <br/>
+          </Typography>
+          {/* Recipe Filter */}
+          {this.filterOptions()}
+          <br/>
+          <Divider/>
+          {/* Recommendations Header */}
+          <Typography id='rec-recipe-header' variant='h4'>
+            Recommended Recipes
+            <br/>
+          </Typography>
+          {/* List of recommended recipes */}
+          <Typography>No recipes found</Typography>
+        </div>
+      ); 
     }
   }
 }
