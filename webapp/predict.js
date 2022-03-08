@@ -1,3 +1,7 @@
+const aiplatform = require('@google-cloud/aiplatform');
+var fs = require('fs');
+const { ContactsOutlined } = require('@material-ui/icons');
+
 const endpointId = "4877442376907358208";
 const project = 'cs-329s-final-project';
 const location = 'us-central1';
@@ -47,3 +51,10 @@ async function predictObjects(filename) {
   }
   return out;
 }
+
+// const fname = '/Users/gabe/Documents/School/Stanford/W22/CS329S/project/IMG_9531-min.jpg';
+const fname = process.argv[2];
+predictObjects(fname).then(labels => {
+    console.log(labels)
+  }
+);
