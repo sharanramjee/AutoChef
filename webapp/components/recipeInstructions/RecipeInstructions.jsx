@@ -34,6 +34,21 @@ class RecipeInstructions extends React.Component {
     });
   }
 
+  componentDidUpdate(prevProps, currProps) {
+    // Get detailed instructions
+    if(prevProps !== currProps){
+      this.setState({recipe_id: this.props.match.params.recipe_id});
+      let query_string = this.queryStringify(true, this.props.match.params.recipe_id);
+      axios.get('http://127.0.0.1:5000/insts?' + query_string)
+      .then(response => {
+        this.setState({instructions: response.data[0].instructions[0].steps});
+      })
+      .catch(err => {
+        console.log(err.response);
+      });
+    }
+  }
+
   instructionsList() {
     let instructions_list = [];
     for(let i = 0; i < this.state.instructions.length; i++){
