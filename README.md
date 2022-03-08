@@ -14,5 +14,5 @@ gcloud config set project cs-329s-final-project
 ```
 
 ```
-node predict.js
+node predict.js test/test_lettuce.jpg
 ```
