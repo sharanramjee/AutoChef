@@ -24,7 +24,8 @@ class RecipeInstructions extends React.Component {
 
   componentDidMount() {
     // Get detailed instructions
-    let query_string = this.queryStringify(true, this.state.recipe_id);
+    // this.setState({recipe_id: this.props.match.params.recipe_id});
+    let query_string = this.queryStringify(true, this.props.match.params.recipe_id);
     axios.get('http://127.0.0.1:5000/insts?' + query_string)
     .then(response => {
       this.setState({instructions: response.data[0].instructions[0].steps});
@@ -34,10 +35,9 @@ class RecipeInstructions extends React.Component {
     });
   }
 
-  componentDidUpdate(prevProps, currProps) {
+  componentDidUpdate(prevProps) {
     // Get detailed instructions
-    if(prevProps !== currProps){
-      this.setState({recipe_id: this.props.match.params.recipe_id});
+    if(prevProps !== this.props){
       let query_string = this.queryStringify(true, this.props.match.params.recipe_id);
       axios.get('http://127.0.0.1:5000/insts?' + query_string)
       .then(response => {

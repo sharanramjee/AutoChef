@@ -50,7 +50,14 @@ class IngredientSelector extends React.Component {
       let latest_photo = response.data.photo;
       let labels_list = response.data.ingredients;
       let labels_dict = {};
+      // Change ingredient names to proper english names
+      let proper_names = {
+        'salad_iceberg': 'iceberg lettuce',
+      }
       for (let label of labels_list) {
+        if(label in proper_names) {
+          label = proper_names[label];
+        }
         labels_dict[label] = true;
       };
       this.setState({
